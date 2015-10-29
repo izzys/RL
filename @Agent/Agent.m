@@ -1,27 +1,22 @@
-classdef Agent
+classdef (Abstract) Agent
 
     
-    properties
+    properties (Abstract)
         
-
-        
+        Policy;
 
     end
     
-    methods
+    methods (Abstract)
         
 
-        function [agnt] = Agent(varargin)
+         [Agent] = Init(Agent)
 
-        end
-        
-        function [agnt] = Init(agnt)
+         [Agent,a] = GetAction(Agent,s,r)
  
-        end
-        
-        function [Env,a] = GetAction(Env,s,r)
- 
-        end
-
+         [Agent] = SetPolicy(Agent,Pi)
+     
+         [Agent] = UpdatePolicy(Agent)
+         
     end
 end

@@ -1,30 +1,21 @@
-classdef Environment
+classdef (Abstract) Environment
 
-    properties
+
+    properties (Abstract)
         
-
+        StDim;
         
-
     end
     
-    methods
+    methods (Abstract)
         
+        [Env] = Init(Env)
 
-        function [Env] = Environment(varargin)
+        [Env,r] = GetReward(Env,a,s)
 
-        end
+        [Env,s] = GetNextState(Env,a,s)
         
-        function [Env] = Init(Env)
- 
-        end
         
-        function [Env] = GetReward(Env,a,s)
- 
-        end        
-
-        function [Env] = GetNextState(Env,a,s)
- 
-        end    
 
     end
 end
