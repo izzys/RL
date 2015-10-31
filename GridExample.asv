@@ -1,6 +1,16 @@
-clc;clear all;close all;clear classes
+clc;close all;clear classes;
+
+RL = RL(DP(),GridWorld());
 
 
-environment = 
-agent = 
-RL = RL(agent,environment);
+
+Pi = {0.25*ones(1,4)};
+Pi.
+
+
+
+RL.Agt.SetPolicy(Pi);
+
+
+RL.Init();
+RL.RunDP();

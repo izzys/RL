@@ -30,19 +30,17 @@ classdef RL < handle
             sum_a = 0;
             for a = 1:length(RL.Env.A)
                 
-                action = RL.Env.A{a};
-                
                 sum_s = 0;
                 for s = 1:length(RL.Env.S)
 
                     Vnext = RL.V(s);
-                    P = 1;%P(s,s_next,a);
-                    R = RL.Env.GetReward(s0,action);
+                    P = P(s,s_next,a);
+                    R = RL.E;
                     sum_s = sum_s + P*( R+g*Vnext );
 
                 end
 
-                Pi = RL.Agt.Policy(s0).P(a);
+                Pi = RL.Agt.Policy(s).P(a);
                 sum_a = sum_a + Pi*sum_s;
             
             end
