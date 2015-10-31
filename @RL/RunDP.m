@@ -19,8 +19,8 @@ gamma = 0.9;
 % end
 
 % iterative way:
-V = RL.V;
-theta = 0.01;
+
+theta = 1e-7;
 delta = Inf;
 k = 1;
 while delta>theta
@@ -29,12 +29,11 @@ while delta>theta
     
     for s = RL.Env.S
         
-        v = V(s);
-        V(s) = RL.Bellmans(s);
-        delta = max(delta,abs(v-V(s)));
+        v = RL.V(s);
+        RL.V(s) = RL.Bellmans(s);
+        delta = max(delta,abs(v-RL.V(s)));
         
     end
     k = k+1;
     
 end
-RL.V = V;

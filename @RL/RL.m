@@ -29,24 +29,36 @@ classdef RL < handle
             
             sum_a = 0;
             for a = 1:length(RL.Env.A)
-                
+
                 action = RL.Env.A{a};
+                s_next = RL.Env.GetNextState(s0,action);
                 
-                sum_s = 0;
-                for s = 1:length(RL.Env.S)
+                Vnext = RL.V(s_next);
+                R = RL.Env.GetReward(s0,action);
+                sum_s = R+g*Vnext;
+                  
+                
 
-                    Vnext = RL.V(s);
-                    P = 1;%P(s,s_next,a);
-                    R = RL.Env.GetReward(s0,action);
-                    sum_s = sum_s + P*( R+g*Vnext );
-
-                end
+%                 sum_s = 0;
+%                 for s = 1:length(RL.Env.S)
+% 
+%                     Vnext = RL.V(s);
+%                     
+%                     if s==s_next
+%                         P = 1;%P(s,s_next,a);
+%                     else
+%                         P = 0;
+%                     end
+%                     R = RL.Env.GetReward(s0,action);
+%                     sum_s = sum_s + P*( R+g*Vnext );
+% 
+%                 end
 
                 Pi = RL.Agt.Policy(s0).P(a);
                 sum_a = sum_a + Pi*sum_s;
             
             end
-            
+                            
             V = sum_a;
             
         end
