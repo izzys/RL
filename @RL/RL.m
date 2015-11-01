@@ -22,7 +22,7 @@ classdef RL < handle
             
             RL.V = zeros(1,RL.Env.Dim);
         end
-        
+                
         function [V] = Bellmans(RL,s0)
             
             g = RL.gamma;
@@ -35,32 +35,40 @@ classdef RL < handle
                 
                 Vnext = RL.V(s_next);
                 R = RL.Env.GetReward(s0,action);
-                sum_s = R+g*Vnext;
+                P = R+g*Vnext;
                   
-                
-
-%                 sum_s = 0;
-%                 for s = 1:length(RL.Env.S)
-% 
-%                     Vnext = RL.V(s);
-%                     
-%                     if s==s_next
-%                         P = 1;%P(s,s_next,a);
-%                     else
-%                         P = 0;
-%                     end
-%                     R = RL.Env.GetReward(s0,action);
-%                     sum_s = sum_s + P*( R+g*Vnext );
-% 
-%                 end
-
                 Pi = RL.Agt.Policy(s0).P(a);
-                sum_a = sum_a + Pi*sum_s;
+                sum_a = sum_a + Pi*P;
             
             end
                             
             V = sum_a;
             
+        end
+        
+        function [V] = BellmansMax(RL,s0)
+            
+            g = RL.gamma;
+            
+            V = -Inf;
+            for a = 1:length(RL.Env.A)
+
+                action = RL.Env.A{a};
+                s_next = RL.Env.GetNextState(s0,action);
+                
+                Vnext = RL.V(s_next);
+                R = RL.Env.GetReward(s0,action);
+                P = R+g*Vnext;
+                 
+                if P>=V
+                    V = P;
+                    a_max = a;
+                end
+                    
+            end
+            
+            RL.Agt.Policy(s0).P = zeros(1,length(RL.Agt.Policy(s0).P));
+            RL.Agt.Policy(s0).P(a_max) = 1;
         end
         
     end

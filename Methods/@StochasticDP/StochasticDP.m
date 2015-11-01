@@ -1,4 +1,4 @@
-classdef DP < Agent
+classdef StochasticDP < Agent
  
     properties 
         
@@ -9,7 +9,7 @@ classdef DP < Agent
     methods (Access = public)
         
         % class cunstructor:
-        function [Agt] = DP()
+        function [Agt] = StochasticDP()
         end
         
         %%%    ~  Abstract fucntions ~  %%%
@@ -47,6 +47,7 @@ classdef DP < Agent
         end
        
         %%%    ~  Added fucntions ~  %%% 
+
                
         function [ind] = subsindex(Agt)
             ind = 0;

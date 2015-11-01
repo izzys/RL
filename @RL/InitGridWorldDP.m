@@ -1,4 +1,4 @@
-function [] = InitDP(RL)   
+function [] = InitGridWorldDP(RL)   
 
 RL.Init();
 
@@ -8,6 +8,5 @@ for s = 1:RL.Env.Dim
     Pi(s).A = RL.Env.A;
     Pi(s).A_id = 1:4;
 end
-
 
 RL.Agt.SetPolicy(Pi);
