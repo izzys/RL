@@ -8,7 +8,7 @@ classdef  GridWorld < Environment
         A = {'up','down','right','left'}; % Available actions
 
         Grid;      
-        Dim = 25;
+        Sdim = 25;
             
         WorldType;
         
@@ -26,8 +26,8 @@ classdef  GridWorld < Environment
         
         function [Env] = Init(Env)
                        
-            Env.S = 1:Env.Dim;           
-            Env.Grid = reshape(Env.S,sqrt(Env.Dim),sqrt(Env.Dim))';
+            Env.S = 1:Env.Sdim;           
+            Env.Grid = reshape(Env.S,sqrt(Env.Sdim),sqrt(Env.Sdim))';
             
         end
 
@@ -39,7 +39,7 @@ classdef  GridWorld < Environment
             
             case 'ZeroStart'
             
-                if (s_next ==1) || (s_next == Env.Dim)
+                if (s_next ==1) || (s_next == Env.Sdim)
                     r = 0;
                 else
                     r=-1;  

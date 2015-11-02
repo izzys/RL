@@ -3,7 +3,7 @@ function [] = InitGridWorldDP(RL)
 RL.Init();
 
 % init policy:
-for s = 1:RL.Env.Dim
+for s = 1:RL.Env.Sdim
     Pi(s).P = [ 0.25 0.25 0.25 0.25];
     Pi(s).A = RL.Env.A;
     Pi(s).A_id = 1:4;

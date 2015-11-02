@@ -4,6 +4,7 @@ classdef (Abstract) Agent < handle
     properties (Abstract)
         
         Policy;
+        Adim;
 
     end
     

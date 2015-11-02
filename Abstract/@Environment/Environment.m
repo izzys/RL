@@ -8,6 +8,8 @@ classdef (Abstract) Environment < handle
         P; % Probability P(s,s',a)
         A; % Available actions
         
+        Sdim;
+        
     end
     
     methods (Abstract)

@@ -1,24 +1,7 @@
 function [] = RunStochasticDP(RL)   
 
-gamma = 0.9;
 
-
-%Policy evaluation
-
-% the straight forward way:
-% sum = 0;
-% 
-% for k = 0:100
-%     
-%   a = RL.Agt.GetAction(s0);
-%   s(k+1) =  RL.Env.GetNextState(s0,a);
-%   r(k+1) = RL.Env.GetReward(s0,a);
-%   s0 = s(k+1);
-%   sum  = sum + gamma^k*r(k+1);
-% 
-% end
-
-%  value iteration: find optimal Pi
+% Value iteration, finding optimal Pi:
 theta = 1e-7;
 delta = Inf;
 k = 1;
@@ -36,7 +19,7 @@ while delta>theta
     k = k+1;
     
 end
-
+ 
 
 
 

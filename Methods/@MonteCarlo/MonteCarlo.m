@@ -1,16 +1,16 @@
-classdef StochasticDP < Agent
+classdef MonteCarlo < Agent
  
     properties 
         
          Policy;
          Adim;
-
+         Eps;
     end
     
     methods (Access = public)
         
         % class cunstructor:
-        function [Agt] = StochasticDP()
+        function [Agt] = MonteCarlo()
         end
         
         %%%    ~  Abstract fucntions ~  %%%

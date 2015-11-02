@@ -6,6 +6,7 @@ classdef RL < handle
         Env;
         gamma = 0.9;
         V;
+        Q;
     end
     
     methods
@@ -20,7 +21,9 @@ classdef RL < handle
             RL.Agt.Init();
             RL.Env.Init();
             
-            RL.V = zeros(1,RL.Env.Dim);
+            RL.V = zeros(1,RL.Env.Sdim);
+            RL.Q = zeros(RL.Agt.Adim,RL.Env.Sdim);
+            
         end
                 
         function [V] = Bellmans(RL,s0)
