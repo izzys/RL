@@ -1,8 +1,8 @@
-clc;close all;clear classes;
+clc;close all;%clear classes;
 
 RL = RL(MonteCarlo(),GridWorld());
 
 RL.Env.WorldType = 'AB'; %ZeroStart
 
-RL.InitMonteCarlo();
-RL.RunMonteCarlo();
+RL.InitMonteCarlo('OnPolicy');
+RL.RunMonteCarlo('OnPolicy');
