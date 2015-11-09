@@ -9,7 +9,7 @@ f1 = subplot(2,1,1);
 box off
 
 f2 = subplot(2,1,2);
-grafica = false;
+grafica = true;
 
 
 P2 = ['setgrafica();'];
@@ -29,4 +29,4 @@ set(gco,'Units','data')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 drawnow;
 
-Cart_PoleDemo(300);
+Cart_PoleDemo(2000);

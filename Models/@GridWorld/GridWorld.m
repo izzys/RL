@@ -9,7 +9,8 @@ classdef  GridWorld < Environment
 
         Grid;      
         Sdim = 25;
-            
+        Adim;
+        
         WorldType;
         
     end
@@ -28,7 +29,7 @@ classdef  GridWorld < Environment
                        
             Env.S = 1:Env.Sdim;           
             Env.Grid = reshape(Env.S,sqrt(Env.Sdim),sqrt(Env.Sdim))';
-            
+            Env.Adim = length(Env.A);
         end
 
         function [r] = GetReward(Env,s,a)

@@ -9,8 +9,8 @@ switch SubMethod
         max_episodes = 1000;
         gamma = 0.9;
         
-        R.value = cell(RL.Agt.Adim,RL.Env.Sdim,max_episodes);
-        R.first_visit = ones(RL.Agt.Adim,RL.Env.Sdim,max_episodes);
+        R.value = cell(RL.Env.Adim,RL.Env.Sdim,max_episodes);
+        R.first_visit = ones(RL.Env.Adim,RL.Env.Sdim,max_episodes);
         
         for episode = 1:max_episodes
         episode
@@ -21,8 +21,8 @@ switch SubMethod
              
              for k =  1:max_k
 
-               a = RL.Agt.GetAction(s0);
-               a_id = find(strcmp(RL.Env.A,a),1,'first');
+               a_id = RL.Agt.GetBestAction(s0);
+               a = RL.Env.A{a_id};
                s_next =  RL.Env.GetNextState(s0,a);
                r =  RL.Env.GetReward(s0,a);
                
@@ -62,8 +62,8 @@ switch SubMethod
                   [ ~, i ] = max(RL.Q(:,s));
 
                    RL.Agt.Policy(s).a_opt = i;
-                   RL.Agt.Policy(s).P(i) = 1-RL.Agt.Eps+RL.Agt.Eps/RL.Agt.Adim;
-                   RL.Agt.Policy(s).P([1:(i-1) , (i+1):RL.Agt.Adim ] ) = RL.Agt.Eps/RL.Agt.Adim;
+                   RL.Agt.Policy(s).P(i) = 1-RL.Agt.Eps+RL.Agt.Eps/RL.Env.Adim;
+                   RL.Agt.Policy(s).P([1:(i-1) , (i+1):RL.Env.Adim ] ) = RL.Agt.Eps/RL.Env.Adim;
 
               end
 
@@ -77,8 +77,8 @@ switch SubMethod
         max_episodes = 10000;
         gamma = 0.9;
         
-        R.value = cell(RL.Agt.Adim,RL.Env.Sdim,max_episodes);
-        R.first_visit = ones(RL.Agt.Adim,RL.Env.Sdim,max_episodes);
+        R.value = cell(RL.Env.Adim,RL.Env.Sdim,max_episodes);
+        R.first_visit = ones(RL.Env.Adim,RL.Env.Sdim,max_episodes);
 
         for episode = 1:max_episodes
         episode
@@ -88,12 +88,15 @@ switch SubMethod
              s0 = randi(RL.Env.Sdim);
              
              for k =  1:max_k
+                 
+               a_id = RL.Agt.GetBestAction(s0);
 
-               a = RL.Agt.GetAction(s0);
                if k==1
-                   a = RL.Env.A{randi(RL.Agt.Adim)};
+                   a_id = randi(RL.Env.Adim);
                end
-               a_id = find(strcmp(RL.Env.A,a),1,'first');
+               
+               a = RL.Env.A{a_id};
+                              
                s_next =  RL.Env.GetNextState(s0,a);
                r =  RL.Env.GetReward(s0,a);
                
@@ -137,7 +140,7 @@ switch SubMethod
                   [ ~, i ] = max(RL.Q(:,s));
 
                    RL.Agt.Policy(s).P(i) = 1;
-                   RL.Agt.Policy(s).P([1:(i-1) , (i+1):RL.Agt.Adim ] ) = 0;
+                   RL.Agt.Policy(s).P([1:(i-1) , (i+1):RL.Env.Adim ] ) = 0;
 
               end
 

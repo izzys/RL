@@ -3,7 +3,7 @@ function [ total_reward,steps,Q ] = Episode( maxsteps, Q , alpha, gamma,epsilon,
 
 global grafica
 % state variables x,x_dot,theta,theta_dot
-x            = [0 0 0 0.01];
+x            = 0.1*[rand() rand() rand() rand()];
 steps        = 0;
 total_reward = 0;
 

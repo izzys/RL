@@ -1,16 +1,15 @@
-classdef TD < Agent
+classdef SARSA < Agent
  
     properties 
         
          Policy;
-         Adim;
 
     end
     
     methods (Access = public)
         
         % class cunstructor:
-        function [Agt] = TD()
+        function [Agt] = SARSA()
         end
         
         %%%    ~  Abstract fucntions ~  %%%
@@ -19,7 +18,7 @@ classdef TD < Agent
             Agt.Policy = [];
         end
         
-        function [a] = GetAction(Agt,s)        
+        function [a] = GetBestAction(Agt,s)        
                         
             % labels and probabilities:
             labels = Agt.Policy(s).A_id;
@@ -33,7 +32,7 @@ classdef TD < Agent
             higher = find(cp >= draw==1,1);
             drawn_a_id = labels(higher-1); 
             
-            a = Agt.Policy(s).A{drawn_a_id};
+            a = Agt.Policy(s).A_id(drawn_a_id);
             
         end
  
@@ -44,12 +43,12 @@ classdef TD < Agent
         end
      
         function [] = UpdatePolicy(Agt)
-            
+                      
+
         end
        
         %%%    ~  Added fucntions ~  %%% 
-
-               
+       
         function [ind] = subsindex(Agt)
             ind = 0;
         end

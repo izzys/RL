@@ -9,7 +9,7 @@ classdef (Abstract) Environment < handle
         A; % Available actions
         
         Sdim;
-        
+        Adim;
     end
     
     methods (Abstract)
