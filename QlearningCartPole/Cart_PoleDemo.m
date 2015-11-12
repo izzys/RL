@@ -21,7 +21,7 @@ Q           = BuildQTable( nstates,nactions );  % the Qtable
 
 alpha       = 0.3;   % learning rate
 gamma       = 1;   % discount factor
-epsilon     = 0.0001;  % probability of a random action selection
+epsilon     = 0.01;  % probability of a random action selection
 grafica     = false; % indicates if display the graphical interface
 
 xpoints     = [];
@@ -33,14 +33,14 @@ for i=1:maxepisodes
     
     disp(['Espisode: ',int2str(i),'  Steps:',int2str(steps),'  Reward:',num2str(total_reward),' epsilon: ',num2str(epsilon)])
     
- %   epsilon = 0.995*epsilon;
-%     if steps==maxsteps
-%     maxsteps = maxsteps+1;
-%     end
+    epsilon = 0.99*epsilon;
+%      if steps==maxsteps
+%      maxsteps = maxsteps+1;
+%      end
     xpoints(i)=i-1;
     ypoints(i)=steps;    
     subplot(2,1,2);    
-    plot(xpoints,ypoints,'r.')      
+    plot(xpoints,ypoints,'g.')      
     title(['Episode: ',int2str(i),' epsilon: ',num2str(epsilon)])  
     xlabel('Episodes')
     ylabel('Steps')    

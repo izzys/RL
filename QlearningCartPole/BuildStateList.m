@@ -4,14 +4,14 @@ function [ states ] = BuildStateList
 % state discretization for the mountain car problem
 x1div = (2-(-2)) / 3.0;
 x2div = (0.1-(-0.1)) / 2.0;
-x3div = (deg2rad(30)-(deg2rad(-30)))/60;
+x3div = (deg2rad(20)-(deg2rad(-20)))/10;
 x4div = (deg2rad(10)-(deg2rad(-10)))/2.0;
 
 %x1  = -2:x1div:2;
 x1  = [-1  1];
 %x2  = -0.5:x2div:0.5;
 x2  = [-1 0 1];
-x3  = deg2rad(-30):x3div:deg2rad(30);
+x3  = deg2rad(-20):x3div:deg2rad(20);
 %x4  = deg2rad(-10):x4div:deg2rad(10);
 x4   = [-1  1];
 

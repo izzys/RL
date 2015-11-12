@@ -2,7 +2,7 @@ classdef RL < handle
  
     properties 
         
-        Agt; 
+        Method; 
         Env;
         gamma = 1;
         alpha = 0.3;
@@ -17,9 +17,9 @@ classdef RL < handle
     
     methods
         
-        function [RL] = RL(agent,environment)
-            RL.Agt = agent;
-            RL.Env = environment;
+        function [RL] = RL(method,environment)
+             RL.Method = method;
+             RL.Env = environment;
         end
         
         function [] = Init(RL)

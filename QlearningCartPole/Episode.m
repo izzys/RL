@@ -3,7 +3,7 @@ function [ total_reward,steps,Q ] = Episode( maxsteps, Q , alpha, gamma,epsilon,
 
 global grafica
 % state variables x,x_dot,theta,theta_dot
-x            = [rand()-0.5 0.1*rand()-0.05 0 0.1*rand()-0.05];
+x            =  [rand()-0.5 0.1*rand()-0.05 0 0.1*rand()-0.05];%[0 0 0 0.1];%
 steps        = 0;
 total_reward = 0;
 
@@ -35,7 +35,7 @@ for i=1:maxsteps
     
     
     % Update the Qtable, that is,  learn from the experience
-    Q = UpdateSARSA( s, a, r, sp, ap, Q , alpha, gamma );
+    Q = UpdateQ( s, a, r, sp, Q , alpha, gamma );
     
     
     %update the current variables
