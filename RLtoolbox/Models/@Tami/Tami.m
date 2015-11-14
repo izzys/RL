@@ -76,8 +76,6 @@ classdef  Tami < Environment
                states = Env.S;
 
         end
-          
-
 
      end
      

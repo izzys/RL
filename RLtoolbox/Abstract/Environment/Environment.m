@@ -5,7 +5,6 @@ classdef (Abstract) Environment < handle
                 
         S; % States 
         R; % Reward R(s,s',a)
-        P; % Probability P(s,s',a)
         A; % Available actions
         
         Sdim;
@@ -14,11 +13,13 @@ classdef (Abstract) Environment < handle
     
     methods (Abstract)
         
-        [Env] = Init(Env)
+        [] = Init(Env)
 
-        [Env,r] = GetReward(Env,s,a)
+        [ r ] = GetReward(Env,s,a)
 
-        [Env,s] = GetNextState(Env,s,a)
+        [ s ] = GetNextState(Env,s,a)
+        
+        [ s ] = DiscretizeState( Env , x  )
         
     end
     

@@ -33,8 +33,13 @@ classdef ReinforcementLearning < handle
         eps_decrease_val;
         lambda;
         max_steps ;
-        max_episodes = 1e6;
-        % value or state-value matrices:
+        
+        
+        % Running params:
+        MaxEpisodes = 1e6;
+        StopLearning;
+        
+        % value or state-value matrixes:
         V;
         Q;
         
@@ -49,11 +54,14 @@ classdef ReinforcementLearning < handle
         
         % enable model graphics:
         grafics;
-        
+        plot_learning_handle;
+        plot_Q_handle;
+        plot_model_handle;
     end
     
     methods
         
+        % class constructor:
         function [RL] = ReinforcementLearning(varargin)
             
              switch nargin
@@ -67,6 +75,7 @@ classdef ReinforcementLearning < handle
              end
         end
         
+        % Initialize agent befor new learning session:
         function [] = Init(RL,varargin)
                     
             RL.Sdim = RL.Env.Sdim;
@@ -74,24 +83,28 @@ classdef ReinforcementLearning < handle
             
             RL.V = zeros(1,RL.Sdim);
             RL.Q = zeros(RL.Adim,RL.Sdim);
+            
+            RL.StopLearning = 0;
               
         end
-        
-        
-        function [a] = GetAction(RL,s)
           
-            a = feval(RL.MethodFcn,RL,'GetBestAction',s) ;  
-            
-        end
-        
+        % Start and run the learning process:
         function [] = StartLearning(RL,varargin)
            
             
             switch nargin
                 case 1
-                  plot_learning_handle = figure;  
+                  RL.plot_learning_handle = figure;  
                 case 2
-                  plot_learning_handle = varargin{1};
+                  RL.plot_learning_handle = varargin{1};
+                  RL.plot_Q_handle = figure;
+                case 3
+                  RL.plot_learning_handle = varargin{1}; 
+                  RL.plot_Q_handle = varargin{2};
+                case 4
+                  RL.plot_learning_handle = varargin{1}; 
+                  RL.plot_Q_handle = varargin{2}; 
+                  RL.plot_model_handle = varargin{3}; 
             end
 
             if isvalid(RL.Env)
@@ -102,33 +115,43 @@ classdef ReinforcementLearning < handle
 
             xpoints     = [];
             ypoints     = [];
-
-            for i=1:RL.max_episodes    
+            
+            episode=1;
+            
+            while episode<RL.MaxEpisodes && ~RL.StopLearning   
 
                 [total_reward,steps] = RL.Episode(); 
 
-                disp(['Espisode: ',int2str(i),'  Steps:',int2str(steps),'  Reward:',num2str(total_reward),' epsilon: ',num2str(epsilon)])
+                disp(['Espisode: ',int2str(episode),'  Steps:',int2str(steps),'  Reward:',num2str(total_reward),' epsilon: ',num2str(epsilon)])
 
                 RL.eps = RL.eps_decrease_val*RL.eps;
 
                 xpoints(i)=i-1;
                 ypoints(i)=steps;    
 
-                plot(plot_learning_handle,xpoints,ypoints,'.','Color',[rand(1) rand(1) rand(1)])      
-                title(['Episode: ',int2str(i),' epsilon: ',num2str(epsilon)])  
+                plot(RL.plot_learning_handle,xpoints,ypoints,'.','Color',[rand(1) rand(1) rand(1)])      
+                title(['Episode: ',int2str(episode),' epsilon: ',num2str(RL.eps)])  
                 xlabel('Episodes')
                 ylabel('Steps')    
                 drawnow
+                
+                episode = episode+1;
 
             end
         end
-
-                
+        
+        % Get action for next step - based on current policy:
+        function [a] = GetAction(RL,s)
+          
+            a = feval(RL.MethodFcn,RL,'GetBestAction',s) ;  
+            
+        end
+        
+        % An episode runs for #steps or until the goal is reached:
         function [total_reward,steps] = Episode(RL)
 
             RL.Env.Init();
             
-            % state variables x,x_dot,theta,theta_dot
             if RL.enable_random_IC
                 x  = str2num( RL.random_IC );
             else
@@ -144,10 +167,10 @@ classdef ReinforcementLearning < handle
       
             for k=1:RL.max_steps     
 
-                %do the selected action and get the next car state    
+                % do the selected action and get the next state:   
                 xp  = RL.Env.GetNextState( x , a  );    
 
-                % observe the reward at state xp and the final state flag
+                % observe the reward at state xp
                 [r]   = RL.Env.GetReward(x,a);
                 stop_episode = RL.Env.Events(x,a);
                 total_reward = total_reward + r;
@@ -182,8 +205,16 @@ classdef ReinforcementLearning < handle
             end
 
         end
-       
+        
+        % Plot a heat map of Q:
+        function [] = PlotQ(RL)
+            
+          figure(RL.plot_Q_handle)  
+          imagesc(Q) 
+            
         end
+
+   end
     
     
 end

@@ -85,7 +85,16 @@ function [] = HandleNofMaxStepsCB(RL,varargin)
 
 function [] = HandleStartLearningCB(RL,varargin)
 
+% plot_learning_handle = varargin{1};
+% plot_Q_handle = varargin{2};
+% plot_model_handle = varargin{3};
+
+RL.Init()
+RL.StartLearning(varargin);
+
 function [] = HandleStopLearningCB(RL,varargin)
+
+RL.StopLearning = 1;
 
 function [] = HandleStartGraphicsCB(RL,varargin)
 

@@ -15,17 +15,10 @@ end
 function [a] = GetBestAction(RL,varargin)   
 
 s = varargin{2};
+a = 1;
 
-% labels and probabilities:
-labels = Agt.Policy(s).A_id;
-probabilities = Agt.Policy(s).P;
 
-% cumulative distribution
-cp = [0 cumsum(probabilities)];
+function [ ] = UpdatePolicy( RL , s, a, r, sp, ap  )
 
-%Draw point at random according to probability density
-draw = rand();
-higher = find(cp >= draw==1,1);
-drawn_a_id = labels(higher-1); 
-
-a = Agt.Policy(s).A_id(drawn_a_id);
+Q = RL.Q;
+RL.Q(a,s) =  Q(a,s) + RL.alpha * ( r + RL.gamma*Q(ap,sp) - Q(a,s) );

@@ -4,9 +4,10 @@ classdef  GridWorld < Environment
 
         S; % States 
         R; % Reward R(s,s',a)
-        P; % Probability P(s,s',a)
         A = {'up','down','right','left'}; % Available actions
 
+        P; % Probability P(s,s',a)
+                
         Grid;      
         Sdim = 25;
         Adim;
@@ -124,6 +125,12 @@ classdef  GridWorld < Environment
             end
             
             
+        end
+        
+        function [ s ] = DiscretizeState( Env , x  )
+          
+                s=x;
+
         end
         
         %%%    ~  Added fucntions ~  %%%        

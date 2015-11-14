@@ -85,7 +85,16 @@ function [] = HandleNofMaxStepsCB(RL,varargin)
 
 function [] = HandleStartLearningCB(RL,varargin)
 
+plot_learning_handle = varargin{1};
+plot_Q_handle = varargin{2};
+plot_model_handle = varargin{2};
+
+RL.Init()
+RL.StartLearning(plot_learning_handle,plot_Q_handle,plot_model_handle);
+
 function [] = HandleStopLearningCB(RL,varargin)
+
+RL.StopLearning = 1;
 
 function [] = HandleStartGraphicsCB(RL,varargin)
 
@@ -95,15 +104,18 @@ function [] = HandleSelectModelCB(RL,varargin)
 selected_model = varargin{2};
 
 if selected_model>0
-Env = eval( RL.ModelsList{selected_model} );
+Env = eval( RL.ModelList{selected_model} );
 Set(RL,'Env',Env)
+end
 
 function [] = HandleSelectMethodCB(RL,varargin)
 selected_method = varargin{2};
 
-Method = RL.MethodsList{selected_method};
+if selected_method>0
+Method = RL.MethodList{selected_method};
 MethodFcn = str2func(Method);
-Set(RL,'selected_method',MethodFcn )
+Set(RL,'MethodFcn',MethodFcn )
+end
 
 function [] = HandleRunEpisodeCB(RL,varargin)
 
