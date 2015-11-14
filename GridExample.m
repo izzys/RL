@@ -1,6 +1,6 @@
  clc;close all;clear classes;
 
-RL = RL(MonteCarlo(),GridWorld());
+RL = ReinforcementLearning(MonteCarlo(),GridWorld());
 
 RL.Env.WorldType = 'AB'; %ZeroStart
 

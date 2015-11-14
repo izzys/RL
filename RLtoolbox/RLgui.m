@@ -22,7 +22,7 @@ function varargout = RLgui(varargin)
 
 % Edit the above text to modify the response to help RLgui
 
-% Last Modified by GUIDE v2.5 12-Nov-2015 19:07:48
+% Last Modified by GUIDE v2.5 13-Nov-2015 05:22:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -44,7 +44,6 @@ end
 
 % End initialization code - DO NOT EDIT
 
-
 % --- Executes just before RLgui is made visible.
 function RLgui_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -60,14 +59,68 @@ handles.output = hObject;
 % UIWAIT makes RLgui wait for user response (see UIRESUME)
  %uiwait(handles.figure1);
  
- % create RL agent:c
-% global RL
-% RL = ReinforcementLearning([],[]);
-handles.RL = ReinforcementLearning([],[]);
+ 
+ % set here model names:
+ model_handle = handles.popupmenu1;
+ set(model_handle, 'String',{ 'Select model...',...
+                              'Grid world',...          % Model #1
+                              'Cart pole',...           % Model #2
+                              'Acrobot',...             % Model #3
+                              'Tami',...                % Model #4
+                              [] } );
+
+
+ % set here method names:
+method_handle = handles.popupmenu2;
+set(method_handle, 'String',{ 'Select method...',...
+                              'Dynamic programing',...  % Method #1
+                              'Monte Carlo',...         % Method #2
+                              'SARSA',...               % Method #3
+                              'Q learning',...          % Method #4
+                              'TD lambda',...           % Method #5
+                              [] } );
+
+  
+ % create RL agent:
+handles.RL = ReinforcementLearning();
 
 % Update handles structure
 guidata(hObject, handles)
 
+% get init values;
+gamma_handle = handles.edit1;
+alpha_handle = handles.edit2;
+alpha_decrease_handle = handles.checkbox2;
+alpha_decrease_val_handle = handles.edit5;
+eps_handle = handles.edit6;
+eps_decrease_handle = handles.checkbox4;
+eps_decrease_val_handle = handles.edit7;
+max_steps_handle = handles.edit8;
+
+gamma = get(gamma_handle,'String');                          % Param #2
+alpha = get(alpha_handle,'String');                          % Param #3
+alpha_decreass = get(alpha_decrease_handle,'Value');         % Param #4
+alpha_decrease_val = get(alpha_decrease_val_handle,'String');% Param #5
+eps = get(eps_handle,'String');                              % Param #6
+eps_decreass = get(eps_decrease_handle,'Value');             % Param #7
+eps_decrease_val = get(eps_decrease_val_handle,'String');    % Param #8
+max_steps = get(max_steps_handle,'String');                  % Param #9
+
+% Init RL values:
+Facade(handles.RL,'Init',gamma,...
+                        alpha,...
+                        alpha_decreass,...
+                        alpha_decrease_val,...
+                        eps,...
+                        eps_decreass,...
+                        eps_decrease_val,...
+                        max_steps,...
+                        [],...
+                        [],...
+                        [],...
+                        [],...
+                            []);
+                        
 % --- Outputs from this function are returned to the command line.
 function varargout = RLgui_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -77,6 +130,7 @@ function varargout = RLgui_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+varargout{2} = handles.RL;
 
 
 % --- Executes on slider movement.
@@ -87,14 +141,12 @@ function slider_gamma_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-%global RL
-
 
 gamma = get(hObject,'Value');
-handles = guihandles;
 gamma_handle = handles.edit1;
 set(gamma_handle,'String',gamma)
 
+Facade(handles.RL,'HandleGammaCB',gamma);
 
 % --- Executes during object creation, after setting all properties.
 function slider_gamma_CreateFcn(hObject, eventdata, handles)
@@ -115,19 +167,17 @@ function edit_gamma_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit1 as text
 %        str2double(get(hObject,'String')) returns contents of edit1 as a double
-%global RL
-
-
 
 gamma = get(hObject,'String');
 gamma = str2double(gamma);
-handles = guihandles;
 gamma_handle = handles.slider3;
 max_val  = get(gamma_handle,'Max');
 min_val  = get(gamma_handle,'Min');
 gamma = min(max_val,max(min_val,gamma));
 set(hObject,'String',gamma)
 set(gamma_handle,'Value',gamma)
+
+Facade(handles.RL,'HandleGammaCB',gamma);
 
 % --- Executes during object creation, after setting all properties.
 function edit_gamma_CreateFcn(hObject, eventdata, handles)
@@ -155,7 +205,7 @@ alpha = get(hObject,'Value');
 alpha_handle = handles.edit2;
 set(alpha_handle,'String',alpha)
 
-
+Facade(handles.RL,'HandleAlphaCB',alpha);
 
 % --- Executes during object creation, after setting all properties.
 function slider_alpha_CreateFcn(hObject, eventdata, handles)
@@ -175,7 +225,6 @@ function edit_alpha_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit2 as text
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
-%global RL
 
 
 alpha = get(hObject,'String');
@@ -186,6 +235,8 @@ min_val  = get(alpha_handle,'Min');
 alpha = min(max_val,max(min_val,alpha));
 set(hObject,'String',alpha)
 set(alpha_handle,'Value',alpha)
+
+Facade(handles.RL,'HandleAlphaCB',alpha);
 
 % --- Executes during object creation, after setting all properties.
 function edit_alpha_CreateFcn(hObject, eventdata, handles)
@@ -199,7 +250,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 % --- Executes on slider movement.
 function slider_eps_Callback(hObject, eventdata, handles)
 
@@ -209,13 +259,12 @@ function slider_eps_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-%global RL
 
 eps = get(hObject,'Value');
 eps_handle = handles.edit6;
 set(eps_handle,'String',eps)
 
-HandleEpsCB(handles.RL,hObject);
+Facade(handles.RL,'HandleEpsCB',eps);
 
 % --- Executes during object creation, after setting all properties.
 function slider_eps_CreateFcn(hObject, eventdata, handles)
@@ -228,14 +277,12 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-
 function edit_epsilon_Callback(hObject, eventdata, handles)
 % hObject    handle to edit6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Hints: get(hObject,'String') returns contents of edit6 as text
 %        str2double(get(hObject,'String')) returns contents of edit6 as a double
-global RL
 
 eps = get(hObject,'String');
 eps = str2double(eps);
@@ -246,7 +293,7 @@ eps = min(max_val,max(min_val,eps));
 set(hObject,'String',eps)
 set(eps_handle,'Value',eps)
 
-%RL.HandleEpsCallback(eps);
+Facade(handles.RL,'HandleEpsCB',eps);
 
 % --- Executes during object creation, after setting all properties.
 function edit_epsilon_CreateFcn(hObject, eventdata, handles)
@@ -268,28 +315,35 @@ function popupmenu_model_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu1
-global RL
-
 contents = cellstr(get(hObject,'String')) ;
 selected_model = contents{get(hObject,'Value')};
 text_handle = handles.text9;
 push_handle = handles.pushbutton3;
 method_handle = handles.popupmenu2;
+setIC_handle = handles.pushbutton8;
 
 
+string = get(hObject,'String');
+void_string = string{1};
 
-if ~strcmp(selected_model,'select model')
+if ~strcmp(selected_model,void_string)
    set(text_handle,'Visible','off')
    set(push_handle,'Enable','on')
+   set(setIC_handle,'Enable','on')
    
    popupmenu_method_Callback(method_handle, [], handles)
+   
    
 else
    set(text_handle,'Visible','on')
    set(push_handle,'Enable','off')
-   
+   set(setIC_handle,'Enable','off')
+   set( push_handle , 'String' , 'Run one episode')
    popupmenu_method_Callback(method_handle, [], handles)
 end
+
+selected_model_ind = find(strcmp(selected_model,string),1,'first');
+Facade(handles.RL,'HandleSelectModelCB',selected_model_ind-1);
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu_model_CreateFcn(hObject, eventdata, handles)
@@ -311,7 +365,6 @@ function popupmenu_method_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu2
-global RL
 
 contents = cellstr(get(hObject,'String')) ;
 selected_method = contents{get(hObject,'Value')};
@@ -321,20 +374,29 @@ model_handle = handles.popupmenu1;
 models = cellstr(get(model_handle,'String')) ;
 selected_model = models{get(model_handle,'Value')};
 
+method_string = get(hObject,'String');
+method_void_string = method_string{1};
 
-if ~strcmp(selected_method,'select method')
+model_string = get(model_handle,'String');
+model_void_string = model_string{1};
+
+if ~strcmp(selected_method,method_void_string)
    set(text_handle,'Visible','off')
    
-   if ~strcmp(selected_model,'select model')
+   if ~strcmp(selected_model,model_void_string)
       set(push_handle,'Enable','on')
    else
       set(push_handle,'Enable','inactive') 
    end
        
 else
+
    set(text_handle,'Visible','on')
    set(push_handle,'Enable','off')
 end
+
+selected_method_ind = find(strcmp(selected_method,method_string),1,'first');
+Facade(handles.RL,'HandleSelectMethodCB',selected_method_ind-1);
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu_method_CreateFcn(hObject, eventdata, handles)
@@ -353,13 +415,11 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global RL
 
 run_episode_handle = handles.pushbutton3;
 graphics_handle = handles.radiobutton1;
 model_handle = handles.popupmenu1;
 method_handle = handles.popupmenu2;
-
 
 on = get(hObject,'UserData');
 if ~on
@@ -369,6 +429,7 @@ if ~on
     set(graphics_handle,'Enable','on')
     set(model_handle,'Enable','off')
     set(method_handle,'Enable','off')
+    set( run_episode_handle , 'String' , 'Run one episode')
 else
     set(hObject,'String','Start learning')
     set(hObject,'BackgroundColor',[0.6 0.8 0.5])
@@ -387,7 +448,6 @@ function checkbox2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox2
-global RL
 
 val = get(hObject,'Value');
 edit_handle = handles.edit5; 
@@ -404,7 +464,6 @@ function edit5_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-global RL
 
 val = get(hObject,'String');
 val = str2double(val);
@@ -412,6 +471,8 @@ max_val  = get(hObject,'Max');
 min_val  = get(hObject,'Min');
 val = min(max_val,max(min_val,val));
 set(hObject,'String',val)
+
+Facade(handles.RL,'HandleAlphaDecreaseValCB',val)
 
 % --- Executes during object creation, after setting all properties.
 function edit5_CreateFcn(hObject, eventdata, handles)
@@ -432,7 +493,7 @@ function checkbox3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox3
-global RL
+
 
 % --- Executes on button press in pushbutton3.
 function pushbutton3_Callback(hObject, eventdata, handles)
@@ -440,8 +501,16 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-disp('make sure to disable until episode is done')
-global RL
+val = get(hObject,'UserData');
+
+if ~val
+   set( hObject , 'String' , 'stop')
+else
+   set( hObject , 'String' , 'Run one episode')
+end
+val = ~val;
+set(hObject,'UserData',val)
+
 
 function edit7_Callback(hObject, eventdata, handles)
 % hObject    handle to edit7 (see GCBO)
@@ -450,7 +519,7 @@ function edit7_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit7 as text
 %        str2double(get(hObject,'String')) returns contents of edit7 as a double
-global RL
+
 
 val = get(hObject,'String');
 val = str2double(val);
@@ -479,7 +548,7 @@ function checkbox4_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox4
-global RL
+
 
 val = get(hObject,'Value');
 edit_handle = handles.edit7; 
@@ -514,7 +583,8 @@ function radiobutton1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of radiobutton1
-global RL
+val = get(hObject,'Value');
+Facade(handles.RL,'HandleGraphicsCB',val);
 
 % --- Executes during object creation, after setting all properties.
 function uipanel1_CreateFcn(hObject, eventdata, handles)
@@ -528,7 +598,7 @@ function about_Callback(hObject, eventdata, handles)
 % hObject    handle to about (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles = guihandles;
+
 about_handle = handles.uipanel10; 
 close_handle = handles.pushbutton7;
 text_handle = handles.text13;
@@ -542,7 +612,7 @@ function pushbutton7_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton7 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles = guihandles;
+
 about_handle = handles.uipanel10; 
 close_handle = handles.pushbutton7;
 text_handle = handles.text13; 
@@ -566,7 +636,6 @@ function checkbox5_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox5
 val = get(hObject,'Value');
-handles = guihandles;
 help_handle = handles.uipanel11; 
 text_handle = handles.text11;
 if val
@@ -598,9 +667,9 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: delete(hObject) closes the figure
+rl_handle = handles.RL;
+delete(rl_handle);
 delete(hObject);
-
-
 
 function edit8_Callback(hObject, eventdata, handles)
 % hObject    handle to edit8 (see GCBO)
@@ -610,6 +679,14 @@ function edit8_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit8 as text
 %        str2double(get(hObject,'String')) returns contents of edit8 as a double
 
+val = get(hObject,'String');
+val = str2double(val);
+max_val  = get(hObject,'Max');
+min_val  = get(hObject,'Min');
+val = min(max_val,max(min_val,val));
+set(hObject,'String',val)
+
+Facade(handles.RL,'HandleNofMaxStepsCB',val)
 
 % --- Executes during object creation, after setting all properties.
 function edit8_CreateFcn(hObject, eventdata, handles)
@@ -622,3 +699,96 @@ function edit8_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+% --- Executes on button press in pushbutton8.
+function pushbutton8_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%opens uipanel12
+setIC_handle = handles.uipanel12;
+set(setIC_handle,'Visible','on')
+
+function edit9_Callback(hObject, eventdata, handles)
+% hObject    handle to edit9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit9 as text
+%        str2double(get(hObject,'String')) returns contents of edit9 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit9_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit10_Callback(hObject, eventdata, handles)
+% hObject    handle to edit10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit10 as text
+%        str2double(get(hObject,'String')) returns contents of edit10 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit10_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton9.
+function pushbutton9_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%closes uipanel12
+setIC_handle = handles.uipanel12;
+set(setIC_handle,'Visible','off')
+
+
+% --------------------------------------------------------------------
+function adv_Callback(hObject, eventdata, handles)
+% hObject    handle to adv (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function Untitled_2_Callback(hObject, eventdata, handles)
+% hObject    handle to Untitled_2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function grid_Callback(hObject, eventdata, handles)
+% hObject    handle to grid (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function Untitled_1_Callback(hObject, eventdata, handles)
+% hObject    handle to Untitled_1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
