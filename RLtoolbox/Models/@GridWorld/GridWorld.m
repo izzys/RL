@@ -9,11 +9,24 @@ classdef  GridWorld < Environment
         P; % Probability P(s,s',a)
                 
         Grid;      
-        Sdim = 25;
+        Sdim = 64;
         Adim;
         
-        WorldType;
+        WorldType = 'AB';
         
+        row_dim;
+        column_dim;
+        
+        const_IC = 1;
+        random_IC = 'randi(64)';
+        
+        RenderObj;
+        
+        %parameters for AB world type:
+        A_state = 2;
+        Ap_state = 22;
+        B_state = 4
+        Bp_state = 55;
     end
     
     methods  (Access = public)
@@ -31,6 +44,20 @@ classdef  GridWorld < Environment
             Env.S = 1:Env.Sdim;           
             Env.Grid = reshape(Env.S,sqrt(Env.Sdim),sqrt(Env.Sdim))';
             Env.Adim = length(Env.A);
+            
+            Env.row_dim = size(Env.Grid,1);
+            Env.column_dim = size(Env.Grid,2);
+            
+            if ~isempty(Env.RenderObj)
+                
+                names = fieldnames(Env.RenderObj);
+                for i=1:length(names)
+                 delete(eval(['Env.RenderObj.' names{i}]));
+                end
+                Env.RenderObj = [];
+            else
+                Env.RenderObj = [];
+            end
         end
 
         function [r] = GetReward(Env,s,a)
@@ -49,20 +76,20 @@ classdef  GridWorld < Environment
             
             case 'AB'
                 
-                r = 0;
+                r = -1;
                 
                 if s==s_next
-                    r=-1;
+                    r=-5;
                     return;
                 end
                 
-                if (s == 2) && (s_next== 22)
-                    r = 10;
+                if (s == Env.A_state) && (s_next== Env.Ap_state)
+                    r = 100;
                     return;
                 end
                 
-                if (s == 4) && (s_next== 14)
-                    r = 5;
+                if (s == Env.B_state) && (s_next== Env.Bp_state)
+                    r = 50;
                     return;
                 end
                 
@@ -86,13 +113,13 @@ classdef  GridWorld < Environment
                 
                 case 'AB'
                     
-                    if s ==2
-                        s = 22;
+                    if s == Env.A_state
+                        s = Env.Ap_state;
                         return;
                     end
                         
-                    if s ==4
-                        s = 14;
+                    if s == Env.B_state
+                        s = Env.Bp_state;
                         return;
                     end 
                     
@@ -101,7 +128,10 @@ classdef  GridWorld < Environment
                     error('Error: World type not defined')
             end
            
-            switch a
+            
+            action = Env.A{a};
+            
+            switch action
 
                 case 'up'
                     try
@@ -133,6 +163,10 @@ classdef  GridWorld < Environment
 
         end
         
+        function [stop] = Events(Env,s,a)            
+            stop = 0;
+        end
+                
         %%%    ~  Added fucntions ~  %%%        
         
         function [ind] = subsindex(Env)
@@ -140,21 +174,6 @@ classdef  GridWorld < Environment
         end
 
     end
-    
-    
-    
-     methods  (Access = private)
-        
-
-
-
-     end
-     
-     
-     methods (Static)
-         
-           
-     end
      
 
         

@@ -10,6 +10,8 @@ classdef  CartPole < Environment
         Adim;
         Sdim;
         
+        const_IC;
+        random_IC;
     end
     
     methods  (Access = public)

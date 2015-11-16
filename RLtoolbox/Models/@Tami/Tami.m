@@ -17,6 +17,7 @@ classdef  Tami < Environment
         % class cunstructor:
         function [Env] = Tami()
             
+            
         end
         
         
@@ -27,6 +28,7 @@ classdef  Tami < Environment
             Env.S = Env.BuildStateList();           
             Env.Sdim = length(Env.S);
             Env.Adim = length(Env.A);
+            
         end
 
         function [r] = GetReward(Env,s,a)

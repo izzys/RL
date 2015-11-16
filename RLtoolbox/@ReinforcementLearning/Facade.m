@@ -24,11 +24,21 @@ HandleAlphaDecreaseValCB(RL,[],varargin{5})
 if nargin>=6
 HandleEpsCB(RL,[],varargin{6})
 if nargin>=7
-HandlEpsDecreaseCB(RL,[],varargin{7})
+HandleEpsDecreaseCB(RL,[],varargin{7})
 if nargin>=8
 HandleEpsDecreaseValCB(RL,[],varargin{8})
 if nargin>=9
 HandleNofMaxStepsCB(RL,[],varargin{9})
+if nargin>=10
+HandleEnableRandomIcCB(RL,[],varargin{10})
+if nargin>=11
+HandleModelGraphicsCB(RL,[],varargin{11})
+if nargin>=12
+Set(RL,'plot_learning_handle',varargin{12})
+if nargin>=13
+Set(RL,'plot_Q_handle',varargin{13})
+if nargin>=14
+Set(RL,'plot_model_handle',varargin{14})
 end
 end
 end
@@ -37,6 +47,13 @@ end
 end
 end
 end
+end
+end
+end
+end
+end
+
+% ---- Incoming data to pass to RL:
 
 function [] = HandleEpsCB(RL,varargin)
 
@@ -50,7 +67,7 @@ function [] = HandleEpsDecreaseValCB(RL,varargin)
     if ischar(val) ; val = str2double(val) ; end
     Set(RL,'eps_decrease_val',val);
 
-function [] = HandlEpsDecreaseCB(RL,varargin)
+function [] = HandleEpsDecreaseCB(RL,varargin)
 
     eps_decrease =  varargin{2};
     Set(RL,'eps_decrease',eps_decrease);
@@ -85,28 +102,63 @@ function [] = HandleNofMaxStepsCB(RL,varargin)
 
 function [] = HandleStartLearningCB(RL,varargin)
 
-% plot_learning_handle = varargin{1};
-% plot_Q_handle = varargin{2};
-% plot_model_handle = varargin{3};
-
 RL.Init()
-RL.StartLearning(varargin);
+RL.StartLearning(varargin{2},varargin{3},varargin{4});
 
 function [] = HandleStopLearningCB(RL,varargin)
 
-RL.StopLearning = 1;
+RL.StopLearning();
 
-function [] = HandleStartGraphicsCB(RL,varargin)
-
-function [] = HandleStopGraphicsCB(RL,varargin)
+function [] = HandleModelGraphicsCB(RL,varargin)
+graphics = varargin{2};
+Set(RL,'graphics',graphics);
 
 function [] = HandleSelectModelCB(RL,varargin)
+
+if nargin>=3
 selected_model = varargin{2};
+if nargin >=4
+h = varargin{3};
+end
+end
 
 if selected_model>0
-Env = eval( RL.ModelList{selected_model} );
-Set(RL,'Env',Env)
+    
+    Env = eval( RL.ModelList{selected_model} );
+    Set(RL,'Env',Env)
+
+    constIC = num2str(RL.Env.const_IC);
+    randIC  = RL.Env.random_IC;
+
+    if ishandle(h)
+        handles = guidata(h);
+
+        h_const = handles.edit9;
+        set(h_const,'String',constIC);
+
+
+        h_rand = handles.edit10;
+        set(h_rand,'String',randIC);
+    end
+
+
+
+else
+    
+    if ishandle(h)
+        handles = guidata(h);
+
+        h_const = handles.edit9;
+        set(h_const,'String','[]');
+
+        h_rand = handles.edit10;
+        set(h_rand,'String','[]');  
+    end
+    
+    
 end
+            
+
 
 function [] = HandleSelectMethodCB(RL,varargin)
 selected_method = varargin{2};
@@ -119,8 +171,47 @@ end
 
 function [] = HandleRunEpisodeCB(RL,varargin)
 
+RL.Episode();
+
 function [] = HandleStopEpisodeCB(RL,varargin)
 
-function [] = HandleSetIcCB(RL,varargin)
+RL.StopEpisode();
 
-function [] = HandleRandomIcCB(RL,varargin)
+function [] = HandleSetConstIcCB(RL,varargin)
+
+    IC =  varargin{2};
+    if ischar(IC) ; alpha = str2num(IC) ; end
+    RL.Env.const_IC=IC;
+    
+function [] = HandleSetRandomIcCB(RL,varargin)
+
+    IC =  varargin{2};
+    RL.Env.random_IC=IC;
+
+function [] = HandleEnableRandomIcCB(RL,varargin)
+enable = varargin{2};
+Set(RL,'enable_random_IC',enable)
+
+function [] = HandleClearLastLearningCB(RL,varargin)
+
+RL.ClearLearningCurve()
+
+% ------------ Outgoing data to pass to GUI:
+function [] = PassConstIC(RL,varargin)
+
+
+
+function [] = PassRandomIC(RL,varargin)
+
+val = varargin{2};
+handles = guidata(RL);
+h = handles.edit10;
+set(h,'String',val);
+
+function [] = PassEpsUpdated(RL,varargin)
+
+function [] = PassAlphaUpdated(RL,varargin)
+
+function [] = PassDoneEpisode(RL,varargin)
+
+function [] = PassDoneLearning(RL,varargin)

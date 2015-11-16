@@ -1,0 +1,93 @@
+function [] = Render( Env ,varargin )
+
+switch nargin
+    
+    case 1
+        error('s and a unknown')
+    case 2
+        error('s or a unknown')
+    case 3
+        s = varargin{1};
+        a= varargin{2};
+        steps = [];
+        h = axes;        
+        disp('steps and axes handle not supplied, creating new figure')
+    case 4
+        disp('axes handle not supplied, creating new figure')
+        s = varargin{1};
+        a= varargin{2};
+        steps = varargin{3};
+        h = axes;
+    case 5
+        s = varargin{1};
+        a= varargin{2};
+        steps = varargin{3};
+        h = varargin{4};
+end
+
+[j,i] = get_plot_coords();
+
+if isempty(Env.RenderObj)
+    
+    axes(h)  
+   
+    hold on
+    
+
+    axis([0 Env.column_dim 0 Env.row_dim]) 
+    
+    
+    Env.RenderObj.Circle = plot(i-0.5,j-0.5,'ko',...
+                                              'MarkerSize',25,...
+                                              'MarkerFaceColor',[1 0.8 0.6]);
+                                                       
+    Env.RenderObj.Text = text(Env.column_dim-0.9,Env.row_dim-0.13,'steps: ' ) ;
+           A_state = 2;
+        Ap_state = 22;
+        B_state = 4
+        Bp_state = 19;
+        
+        
+    [i,j] = get_plot_coords(state)
+    Env.RenderObj.A = text(2.5,1.5,'A' ) ;
+    Env.RenderObj.Ap = text(2.5,3.5,['A' ''''] ) ;
+    Env.RenderObj.B = text(1.5,3.5,'B' ) ;
+    Env.RenderObj.Bp = text(2.5,0.5,['B' ''''] ) ;
+       
+    set(h,'YDir','reverse',...
+          'XTick',[0:1:Env.column_dim],...
+          'YTick',[0:1:Env.row_dim],... 
+          'XGrid','on',... 
+          'YGrid','on',...
+          'XColor',[0 0 0],...
+          'YColor',[0 0 0],...
+          'GridLineStyle','-');
+  
+  
+    drawnow
+    
+    Env.Render(s,a,steps,h);
+    
+      
+else
+
+
+    set(Env.RenderObj.Circle,'XData',i-0.5,'Ydata',j-0.5)
+    set(Env.RenderObj.Text,'String',['steps: ' num2str(steps)])
+
+    drawnow
+
+    pause(0.1)
+
+end
+
+
+
+    function [i,j] = get_plot_coords(state)
+        
+          [i,j] =   ind2sub([Env.row_dim,Env.column_dim],state);
+
+    end
+
+end
+  

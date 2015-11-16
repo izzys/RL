@@ -10,7 +10,6 @@ else
     method_Callback(RL, varargin{:});
 end
 
-    
 function [a] = GetBestAction(RL,varargin)   
 
 s = varargin{2};
@@ -53,8 +52,6 @@ function [V] = Bellmans(RL,varargin)
     end
 
     V = sum_a;
-
-
 
 function [V] = BellmansMax(RL,s0)
 

@@ -36,12 +36,16 @@ else
                 RL.MethodFcn = value;
             case 'Env'
                 RL.Env = value;
-            case 'IC'
-                RL.IC = value;
-            case 'random_IC'
-                RL.random_IC = value;
             case 'enable_random_IC'
                 RL.enable_random_IC = value;  
+            case 'graphics'
+                RL.graphics = value;  
+            case 'plot_learning_handle'
+                RL.plot_learning_handle = value;  
+            case 'plot_Q_handle'
+                RL.plot_Q_handle = value;    
+            case 'plot_model_handle'
+                RL.plot_model_handle = value;    
             otherwise
                 error(['Set failed: ',key,' property not found']);
         end
