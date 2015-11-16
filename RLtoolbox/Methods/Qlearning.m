@@ -6,26 +6,31 @@ if nargin && ischar(varargin{1})
 end
 
 if nargout
-    [varargout{1:nargout}] = method_Callback(RL, varargin{:});
+    [varargout{1:nargout}] = method_Callback(RL, varargin{2:end});
 else
-    method_Callback(RL, varargin{:});
+    method_Callback(RL, varargin{2:end});
 end
 
     
 function [a] = GetBestAction(RL,varargin)   
 
-s = varargin{2};
-
-% labels and probabilities:
-labels = Agt.Policy(s).A_id;
-probabilities = Agt.Policy(s).P;
-
-% cumulative distribution
-cp = [0 cumsum(probabilities)];
-
-%Draw point at random according to probability density
+s = varargin{1};
 draw = rand();
-higher = find(cp >= draw==1,1);
-drawn_a_id = labels(higher-1); 
 
-a = Agt.Policy(s).A_id(drawn_a_id);
+if (draw>RL.eps) 
+    [~ , a] = max(RL.Q(:,s));   
+else
+    a = randi(RL.Adim);
+end
+
+
+function [ ] = UpdatePolicy( RL , varargin  )
+
+    s = varargin{1};
+    a = varargin{2}; 
+    r = varargin{3}; 
+    sp = varargin{4}; 
+    
+    Q = RL.Q;
+    RL.Q(a,s) =  Q(a,s) + RL.alpha * ( r + RL.gamma*max( Q(:,sp) )- Q(a,s) );
+
