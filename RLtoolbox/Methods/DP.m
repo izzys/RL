@@ -10,33 +10,58 @@ else
     method_Callback(RL, varargin{:});
 end
 
+function [total_reward,steps] = RunEpisode(RL,varargin)
+
+
+            total_reward = [];
+            steps = [];
+
+
+            % Update the Qtable, that is,  learn from the experience
+            UpdatePolicy(RL);
+
+            % Plot of the model
+%             if RL.graphics        
+%                RL.Env.Render(x,a,steps,RL.plot_model_handle);    
+%             end
+
+
+       
+        
 function [a] = GetBestAction(RL,varargin)   
 
 s = varargin{2};
-
-% labels and probabilities:
-labels = RL.Policy(s).A_id;
-probabilities = Agt.Policy(s).P;
-
-% cumulative distribution
-cp = [0 cumsum(probabilities)];
-
-%Draw point at random according to probability density
 draw = rand();
-higher = find(cp >= draw==1,1);
-drawn_a_id = labels(higher-1); 
 
-a = RL.Policy(s).A_id(drawn_a_id);
+if (draw>RL.eps) 
+    [~ , a] = max(RL.Q(:,s));   
+else
+    a = randi(RL.Adim);
+end
 
-function [V] = Bellmans(RL,varargin)
+function [ ] = UpdatePolicy( RL , varargin  )
+
+for s=1:RL.Sdim
+  
+  v = RL.V(s);
+  BellmansMax(RL,s)
+  RL.delta = max(RL.delta,abs(v-RL.V(s))) ;
+  
+  if RL.delta<RL.stopping_criteria
+      RL.StopLearning();
+      break
+  end
+      
+end
+
+function [V] = Bellmans(RL,s0)
 
     g = RL.gamma;
 
     sum_a = 0;
-    for a = 1:length(RL.Env.A)
+    for a = 1:length(RL.A)
 
-        action = RL.Env.A{a};
-        s_next = RL.Env.GetNextState(s0,action);
+        s_next = RL.Env.GetNextState(s0,a);
 
 
         Vnext = RL.V(s_next);
@@ -53,26 +78,25 @@ function [V] = Bellmans(RL,varargin)
 
     V = sum_a;
 
-function [V] = BellmansMax(RL,s0)
+function [] = BellmansMax(RL,s0)
 
     g = RL.gamma;
-
     V = -Inf;
+    
     for a = 1:length(RL.Env.A)
 
-        action = RL.Env.A{a};
-        s_next = RL.Env.GetNextState(s0,action);
+        s_next = RL.Env.GetNextState(s0,a);
 
         Vnext = RL.V(s_next);
-        R = RL.Env.GetReward(s0,action);
+        R = RL.Env.GetReward(s0,a);
         P = R+g*Vnext;
 
         if P>=V
-            V = P;
+            RL.V(s0) = P;
             a_max = a;
         end
 
     end
 
-    RL.Agt.Policy(s0).P = zeros(1,length(RL.Agt.Policy(s0).P));
-    RL.Agt.Policy(s0).P(a_max) = 1;
+    RL.Q(:,s0) = zeros(RL.Adim,1);
+    RL.Q(a_max,s0) = 1;

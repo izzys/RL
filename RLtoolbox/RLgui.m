@@ -565,6 +565,13 @@ if ~stop_episode
    % run episode:
    Facade(handles.RL,'HandleRunEpisodeCB')
    
+   set(start_learning_handle,'Enable','on')
+   set( hObject , 'String' , 'Run one episode')
+   
+   % change flag so pressing the button again starts the episode:
+   stop_episode = 0;
+   set(hObject,'UserData',stop_episode)
+   
 else
    set( hObject , 'String' , 'Run one episode')
    

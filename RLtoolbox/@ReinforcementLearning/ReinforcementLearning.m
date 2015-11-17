@@ -21,7 +21,7 @@ classdef ReinforcementLearning < handle
                      'CartPole()',... 
                      'AcroBot()',...
                      'Tami()',...
-                         []};
+                     []};
         
         % learning parameters:       
         gamma;
@@ -39,6 +39,8 @@ classdef ReinforcementLearning < handle
         MaxEpisodes = 1e6;
         StopLearn;
         StopSim;
+        stopping_criteria = 1e-4;
+        delta;
         
         % value or state-value matrixes:
         V;
@@ -57,6 +59,8 @@ classdef ReinforcementLearning < handle
         plot_Q_handle;
         plot_model_handle;
         LearnPlotColor;
+        
+        PlotObj;
         
         Xpoints;
         Ypoints;
@@ -93,36 +97,53 @@ classdef ReinforcementLearning < handle
             
             RL.StopLearn = 0;
             
-            RL.LearnPlotColor = [rand() rand() rand()];
-            
             RL.Xpoints     = [];
             RL.Ypoints     = [];
             
             RL.InitDone = 1;
-                         
+            RL.delta = 0;
+            
+            % Init plots:
+            set(RL.plot_Q_handle,'XTick',[],...
+                                 'YTick',[],... 
+                                 'XTickLabel',[],... 
+                                 'YTickLabel',[]);
+            colormap(RL.plot_Q_handle, 'Jet')
+           
+            RL.LearnPlotColor = [rand() rand() rand()];
+          
+            RL.PlotObj.curve = plot(RL.plot_learning_handle,0,0,'Color',RL.LearnPlotColor)  ; 
+            
+            RL.PlotObj.title = title(RL.plot_learning_handle,'Episode:       epsilon:        alpha:')  ;
+            
+            xlabel(RL.plot_learning_handle,'Episodes')
+            ylabel(RL.plot_learning_handle,'Reward')    
+            
         end
           
         % Start and run the learning process:
         function [] = StartLearning(RL,varargin)
            
-            
-            switch nargin
-                case 1
+           
+            if (nargin== 1) %RL is used without GUI
                   RL.plot_learning_handle = figure; 
                   RL.plot_Q_handle = figure;
                   RL.plot_model_handle = figure;
             end
 
-            if isvalid(RL.Env)
+            if isvalid(RL.Env)  % Run RL only if a environment is loaded
                   RL.Init();
             else
                   error('Environment is not loaded')
             end
            
             episode=1;
+            RL.delta = Inf;
             
-            while episode<=RL.MaxEpisodes && ~RL.StopLearn   
+            while episode<=RL.MaxEpisodes && ~RL.StopLearn  && (RL.delta>RL.stopping_criteria) 
 
+                RL.delta = 0;
+                
                 [total_reward,steps] = RL.Episode(); 
 
                 disp(['Espisode: ',int2str(episode),'  Steps:',int2str(steps),'  Reward:',num2str(total_reward),' epsilon: ',num2str(RL.eps)])
@@ -146,6 +167,8 @@ classdef ReinforcementLearning < handle
         function [] = StopLearning(RL)
             
             RL.StopLearn=1;
+            RL.StopEpisode()
+            
         end
         
         % Get action for next step - based on current policy:
@@ -178,71 +201,15 @@ classdef ReinforcementLearning < handle
         
         % An episode runs for #steps or until the goal is reached:
         function [total_reward,steps] = Episode(RL)
-
-            
+  
             if ~RL.InitDone
                 RL.Init();
             end
             
             RL.Env.Init();
             
-            if RL.enable_random_IC
-                x  = str2num( RL.Env.random_IC );
-            else
-                x = RL.Env.const_IC;
-            end
-            
-            steps        = 0;
-            total_reward = 0;
-
-            % convert the continous state variables to an index of the statelist:
-            s   = RL.Env.DiscretizeState(x);
-            % selects an action using the current strategy:
-            a   = RL.GetAction(s);
-      
-            RL.StopSim = 0;
-            
-            while steps<RL.max_steps  && ~RL.StopSim    
-
-                % do the selected action and get the next state:   
-                xp  = RL.Env.GetNextState( x , a  );    
-
-                % observe the reward at state xp
-                [r]   = RL.Env.GetReward(x,a);
-                stop_episode = RL.Env.Events(x,a);
-                total_reward = total_reward + (RL.gamma)^steps*r;
-
-                % convert the continous state variables in [xp] to an index of the statelist    
-                sp  = RL.Env.DiscretizeState(xp);
-
-                % select action prime
-                ap = RL.GetAction(sp);
-
-                % Update the Qtable, that is,  learn from the experience
-                RL.UpdatePolicy(s,a,r,sp,ap);
-
-                
-                % Plot of the model
-                if RL.graphics        
-                   RL.Env.Render(x,a,steps,RL.plot_model_handle);    
-                end
-                
-                
-                %update the current variables
-                s = sp;
-                a = ap;
-                x = xp;
-
-                %increment the step counter.
-                steps=steps+1;
-
-                % if the goal is reached break the episode
-                if stop_episode
-                    RL.StopSim=1;
-                end
-
-            end
-
+            [total_reward,steps] = feval(RL.MethodFcn,RL,'RunEpisode') ;
+               
         end
         
         % Stop the episode;
@@ -255,27 +222,20 @@ classdef ReinforcementLearning < handle
         % Plot a heat map of Q:
         function [] = PlotLearningCurve(RL,episode,total_reward,steps)
             
-          RL.Xpoints(episode)=episode;
-          RL.Ypoints(episode)=total_reward;    
- 
-          plot(RL.plot_learning_handle,RL.Xpoints,RL.Ypoints,'Color',RL.LearnPlotColor)      
-          title(RL.plot_learning_handle,['Episode: ',int2str(episode),' epsilon: ',num2str(RL.eps)])  
-          xlabel(RL.plot_learning_handle,'Episodes')
-          ylabel(RL.plot_learning_handle,'Reward')    
-          drawnow
-            
-          axes(RL.plot_Q_handle)  
-          imagesc(RL.Q) 
+%           RL.Xpoints(episode)=episode;
+%           RL.Ypoints(episode)=total_reward;    
+% 
+%           set(RL.PlotObj.curve,'Xdata',RL.Xpoints,'Ydata',RL.Ypoints)  
+%           set(RL.PlotObj.title,'String',['Episode: ',int2str(episode),'  epsilon: ',num2str(RL.eps) , '  alpha: ' num2str(RL.alpha)]) 
+%           drawnow
           
+          
+          axes(RL.plot_Q_handle)  
+          imagesc(RL.Q)     
           set(RL.plot_Q_handle,'XTick',[],...
-          'YTick',[],... 
-          'XTickLabel',[],... 
-          'YTickLabel',[],... 
-          'XGrid','on',... 
-          'YGrid','on');
-      
-          colormap(RL.plot_Q_handle, 'Jet')
-            
+                               'YTick',[],... 
+                               'XTickLabel',[],... 
+                               'YTickLabel',[]);
           drawnow
           
         end
@@ -285,6 +245,8 @@ classdef ReinforcementLearning < handle
             
             cla(RL.plot_Q_handle)
             cla(RL.plot_learning_handle )
+            RL.Init();
+            
           
         end
    end

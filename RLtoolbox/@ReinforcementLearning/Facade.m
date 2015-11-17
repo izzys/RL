@@ -158,8 +158,6 @@ else
     
 end
             
-
-
 function [] = HandleSelectMethodCB(RL,varargin)
 selected_method = varargin{2};
 
@@ -197,16 +195,6 @@ function [] = HandleClearLastLearningCB(RL,varargin)
 RL.ClearLearningCurve()
 
 % ------------ Outgoing data to pass to GUI:
-function [] = PassConstIC(RL,varargin)
-
-
-
-function [] = PassRandomIC(RL,varargin)
-
-val = varargin{2};
-handles = guidata(RL);
-h = handles.edit10;
-set(h,'String',val);
 
 function [] = PassEpsUpdated(RL,varargin)
 
