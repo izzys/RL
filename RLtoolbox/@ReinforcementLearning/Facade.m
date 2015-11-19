@@ -102,7 +102,7 @@ function [] = HandleNofMaxStepsCB(RL,varargin)
 
 function [] = HandleStartLearningCB(RL,varargin)
 
-RL.Init()
+
 RL.StartLearning(varargin{2},varargin{3},varargin{4});
 
 function [] = HandleStopLearningCB(RL,varargin)
@@ -197,8 +197,18 @@ RL.ClearLearningCurve()
 % ------------ Outgoing data to pass to GUI:
 
 function [] = PassEpsUpdated(RL,varargin)
+handles = guidata(RL.figure_handle);
+edit_eps_handle = handles.edit6;
+slider_eps_handle = handles.slider6;
+set(edit_eps_handle,'String',num2str(RL.eps))
+set(slider_eps_handle,'value',RL.eps)
 
 function [] = PassAlphaUpdated(RL,varargin)
+handles = guidata(RL.figure_handle);
+edit_alpha_handle = handles.edit2;
+slider_alpha_handle = handles.slider4;
+set(edit_alpha_handle,'String',num2str(RL.alpha))
+set(slider_alpha_handle,'value',RL.alpha)
 
 function [] = PassDoneEpisode(RL,varargin)
 

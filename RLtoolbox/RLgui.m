@@ -137,8 +137,8 @@ function varargout = RLgui_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
-varargout{2} = handles.RL;
+handles.RL.figure_handle = handles.output;
+varargout{1} = handles.RL;
 
 % --- Executes on slider movement.
 function slider_gamma_Callback(hObject, eventdata, handles)
@@ -452,7 +452,7 @@ if ~stop_learning %start learning:
     
     Facade(handles.RL,'HandleStartLearningCB',plot_learning_handle,plot_Q_handle,plot_model_handle);
     
-    
+    pushbutton2_Callback(hObject, eventdata, handles)
     
 else %stop learning:
     
@@ -463,6 +463,7 @@ else %stop learning:
     set(model_handle,'Enable','on')
     set(method_handle,'Enable','on')
     set(clear_handle,'Enable','on')
+    set(hObject,'Value',0)
     
     Facade(handles.RL,'HandleStopLearningCB');
     

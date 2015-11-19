@@ -12,21 +12,14 @@ end
 
 function [total_reward,steps] = RunEpisode(RL,varargin)
 
+    RL.delta = 0;
+    
+    steps = RL.Sdim;
 
-            total_reward = [];
-            steps = [];
-
-
-            % Update the Qtable, that is,  learn from the experience
-            UpdatePolicy(RL);
-
-            % Plot of the model
-%             if RL.graphics        
-%                RL.Env.Render(x,a,steps,RL.plot_model_handle);    
-%             end
-
-
-       
+    % Update the Qtable, that is,  learn from the experience
+    UpdatePolicy(RL);   
+    
+    total_reward = RL.delta;
         
 function [a] = GetBestAction(RL,varargin)   
 
@@ -54,30 +47,6 @@ for s=1:RL.Sdim
       
 end
 
-function [V] = Bellmans(RL,s0)
-
-    g = RL.gamma;
-
-    sum_a = 0;
-    for a = 1:length(RL.A)
-
-        s_next = RL.Env.GetNextState(s0,a);
-
-
-        Vnext = RL.V(s_next);
-        R = RL.Env.GetReward(s0,action);
-        P = R+g*Vnext;
-
-
-        a = GetBestAction(RL,varargin);
-
-        Pi = RL.Agt.Policy(s0).P(a);
-        sum_a = sum_a + Pi*P;
-
-    end
-
-    V = sum_a;
-
 function [] = BellmansMax(RL,s0)
 
     g = RL.gamma;
@@ -89,14 +58,16 @@ function [] = BellmansMax(RL,s0)
 
         Vnext = RL.V(s_next);
         R = RL.Env.GetReward(s0,a);
-        P = R+g*Vnext;
+        Rp = R+g*Vnext;
 
-        if P>=V
-            RL.V(s0) = P;
+        if Rp>=V
+            V = Rp;
             a_max = a;
         end
 
     end
+    
+    RL.V(s0) = V;
 
     RL.Q(:,s0) = zeros(RL.Adim,1);
-    RL.Q(a_max,s0) = 1;
+    RL.Q(a_max,s0) = V;
