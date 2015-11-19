@@ -4,7 +4,6 @@ classdef (Abstract) Environment < handle
     properties (Abstract)
                 
         S; % States 
-        R; % Reward R(s,s',a)
         A; % Available actions
         
         Sdim;
@@ -20,6 +19,8 @@ classdef (Abstract) Environment < handle
         [ s ] = GetNextState(Env,s,a)
         
         [ s ] = DiscretizeState( Env , x  )
+        
+        [e] = Events(Env,s,a)
         
     end
     

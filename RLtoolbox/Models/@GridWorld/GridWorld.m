@@ -9,7 +9,7 @@ classdef  GridWorld < Environment
         P; % Probability P(s,s',a)
                 
         Grid;      
-        Sdim = 64;
+        Sdim = 64;;
         Adim;
         
         WorldType = 'AB';
@@ -25,7 +25,7 @@ classdef  GridWorld < Environment
         %parameters for AB world type:
         A_state = 2;
         Ap_state = 22;
-        B_state = 4
+        B_state = 4;
         Bp_state = 55;
     end
     
@@ -39,7 +39,7 @@ classdef  GridWorld < Environment
         
         %%%    ~  Abstract fucntions ~  %%%
         
-        function [Env] = Init(Env)
+        function [] = Init(Env)
                        
             Env.S = 1:Env.Sdim;           
             Env.Grid = reshape(Env.S,sqrt(Env.Sdim),sqrt(Env.Sdim))';
@@ -163,8 +163,8 @@ classdef  GridWorld < Environment
 
         end
         
-        function [stop] = Events(Env,s,a)            
-            stop = 0;
+        function [e] = Events(Env,s,a)            
+            e = 0;
         end
                 
         %%%    ~  Added fucntions ~  %%%        

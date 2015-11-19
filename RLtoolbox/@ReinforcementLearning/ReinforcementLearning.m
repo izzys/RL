@@ -10,7 +10,6 @@ classdef ReinforcementLearning < handle
         
         % list of avaiable models. make sure to match list on RLgui:
         MethodList = {'DP',...
-                      'MonteCarlo',...
                       'SARSA',...
                       'Qlearning',...
                       'TDlambda',...
@@ -39,7 +38,7 @@ classdef ReinforcementLearning < handle
         MaxEpisodes = 1e6;
         StopLearn;
         StopSim;
-        stopping_criteria = 1e-4;
+        stopping_criteria = 1e-8;
         delta;
         
         % value or state-value matrixes:

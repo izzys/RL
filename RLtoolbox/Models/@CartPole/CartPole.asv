@@ -55,12 +55,12 @@ classdef  CartPole < Environment
                 names = fieldnames(Env.RenderObj);
                 for i=1:length(names)
                     hi = eval(['Env.RenderObj.' names{i}]);
-                    if isnumeric( hi )  
-                        delete(hi);
-                    else %object is a structue of handles
+                    if isnumeric( hi ) 
+                          delete(hi);
+                    else %object is a structue
                         names2 = fieldnames(hi); 
-                        h2 = eval(['Env.RenderObj.' names{i} '.' names2{1}]);
-                        delete(h2);
+                        h2 = eval(['Env.RenderObj.' names{i} '.' names2]);
+                        
                     end
                 end
                 Env.RenderObj = [];

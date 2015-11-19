@@ -71,7 +71,6 @@ function [total_reward,steps] = RunEpisode(RL,varargin)
 
         end  
         
-        
 function [a] = GetBestAction(RL,varargin)   
 
 s = varargin{1};
@@ -82,7 +81,6 @@ if (draw>RL.eps)
 else
     a = randi(RL.Adim);
 end
-
 
 function [ ] = UpdatePolicy( RL , varargin  )
 

@@ -73,10 +73,9 @@ handles.output = hObject;
 method_handle = handles.popupmenu2;
 set(method_handle, 'String',{ 'Select method...',...
                               'Dynamic programing',...  % Method #1
-                              'Monte Carlo',...         % Method #2
-                              'SARSA',...               % Method #3
-                              'Q learning',...          % Method #4
-                              'TD lambda',...           % Method #5
+                              'SARSA',...               % Method #2
+                              'Q learning',...          % Method #3
+                              'TD lambda',...           % Method #4
                               [] } );
 
   
@@ -442,7 +441,6 @@ if ~stop_learning %start learning:
     set(hObject,'BackgroundColor',[1 0.6 0.6])
     set(run_episode_handle,'Enable','off')
     set(clear_handle,'Enable','off')
-  %  set(graphics_handle,'Enable','on')
     set(model_handle,'Enable','off')
     set(method_handle,'Enable','off')
     set( run_episode_handle , 'String' , 'Run one episode')
@@ -452,14 +450,26 @@ if ~stop_learning %start learning:
     
     Facade(handles.RL,'HandleStartLearningCB',plot_learning_handle,plot_Q_handle,plot_model_handle);
     
-    pushbutton2_Callback(hObject, eventdata, handles)
+    
+    set(hObject,'String','Start learning')
+    set(hObject,'BackgroundColor',[0.6 0.8 0.5])
+    set(run_episode_handle,'Enable','on')
+    set(model_handle,'Enable','on')
+    set(method_handle,'Enable','on')
+    set(clear_handle,'Enable','on')
+    set(hObject,'Value',0)
+    stop_learning = 0;
+    set(hObject,'UserData',stop_learning);
+    
+    
+    
+    
     
 else %stop learning:
     
     set(hObject,'String','Start learning')
     set(hObject,'BackgroundColor',[0.6 0.8 0.5])
     set(run_episode_handle,'Enable','on')
- %   set(graphics_handle,'Enable','off')
     set(model_handle,'Enable','on')
     set(method_handle,'Enable','on')
     set(clear_handle,'Enable','on')
