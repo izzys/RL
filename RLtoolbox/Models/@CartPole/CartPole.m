@@ -72,6 +72,7 @@ classdef  CartPole < Environment
 
         function [r] = GetReward(Env,s,a)
             
+            
             s_next = Env.GetNextState(s,a);
             
             x         = s_next(1);

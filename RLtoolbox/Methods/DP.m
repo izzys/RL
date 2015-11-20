@@ -54,10 +54,13 @@ function [] = BellmansMax(RL,s0)
     
     for a = 1:length(RL.Env.A)
 
-        s_next = RL.Env.GetNextState(s0,a);
+        x = RL.Env.S(s0,:);
+        x_next = RL.Env.GetNextState(x,a);
+        s_next = RL.Env.DiscretizeState(x_next);
 
+        
         Vnext = RL.V(s_next);
-        R = RL.Env.GetReward(s0,a);
+        R = RL.Env.GetReward(RL.Env.S(s0,:),a);
         Rp = R+g*Vnext;
 
         if Rp>=V
@@ -69,5 +72,5 @@ function [] = BellmansMax(RL,s0)
     
     RL.V(s0) = V;
 
-    RL.Q(:,s0) = zeros(RL.Adim,1);
+    RL.Q(:,s0) = ones(RL.Adim,1)*(-9999);
     RL.Q(a_max,s0) = V;

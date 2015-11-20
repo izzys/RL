@@ -92,8 +92,8 @@ classdef ReinforcementLearning < handle
             RL.Sdim = RL.Env.Sdim;
             RL.Adim = RL.Env.Adim;
             
-            RL.V = zeros(1,RL.Sdim);
-            RL.Q = zeros(RL.Adim,RL.Sdim);
+            RL.V = ones(1,RL.Sdim)*(-9999);
+            RL.Q = ones(RL.Adim,RL.Sdim)*(-9999);
             
             RL.StopLearn = 0;
             
