@@ -29,13 +29,15 @@ end
 
 if isempty(Env.RenderObj)
     
+    cla(h)
+    
     axes(h)  
    
     hold on
     
 
     axis([0 Env.column_dim 0 Env.row_dim]) 
-    
+    axis normal
     [i,j] = get_plot_coords(s);
     Env.RenderObj.Circle = plot(i,j,'ko',...
                                     'MarkerSize',25,...

@@ -60,21 +60,20 @@ function [] = BellmansMax(RL,s0)
 
         
         Vnext = RL.V(s_next);
-     %   Qnext = RL.Q(a,s_next);
+        Qnext = RL.Q(s_next,a);
         
         R = RL.Env.GetReward(RL.Env.S(s0,:),a);
         Rp = R+g*Vnext;
+        Rp_q = R+
 
         if Rp>=V
             V = Rp;
             a_max = a;
         end
-        
-
-        
-        RL.Q(a,s0) = Rp;
 
     end
     
     RL.V(s0) = V;
 
+    RL.Q(:,s0) = zeros(RL.Adim,1)*(-99999);
+    RL.Q(a_max,s0) = 1;

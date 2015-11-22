@@ -68,12 +68,17 @@ end
     
 
  if isempty(Env.RenderObj)
+     
+    cla(axes_handle)
     
     axes(axes_handle)  
-   
+       
     hold on
 
-    
+    set(axes_handle,'YDir','normal',...
+          'XGrid','off',... 
+          'YGrid','off');
+
     axis equal
     axis([-6 6 0 4])
     

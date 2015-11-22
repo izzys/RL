@@ -16,29 +16,35 @@ function [] = Init(RL,varargin)
 if nargin>=2
 HandleGammaCB(RL,[],varargin{2})
 if nargin>=3
-HandleAlphaCB(RL,[],varargin{3})
+HandleLambdaCB(RL,[],varargin{3})
 if nargin>=4
-HandleAlphaDecreaseCB(RL,[],varargin{4})
+HandleAlphaCB(RL,[],varargin{4})
 if nargin>=5
-HandleAlphaDecreaseValCB(RL,[],varargin{5})
+HandleAlphaDecreaseCB(RL,[],varargin{5})
 if nargin>=6
-HandleEpsCB(RL,[],varargin{6})
+HandleAlphaDecreaseValCB(RL,[],varargin{6})
 if nargin>=7
-HandleEpsDecreaseCB(RL,[],varargin{7})
+HandleEpsCB(RL,[],varargin{7})
 if nargin>=8
-HandleEpsDecreaseValCB(RL,[],varargin{8})
+HandleEpsDecreaseCB(RL,[],varargin{8})
 if nargin>=9
-HandleNofMaxStepsCB(RL,[],varargin{9})
+HandleEpsDecreaseValCB(RL,[],varargin{9})
 if nargin>=10
-HandleEnableRandomIcCB(RL,[],varargin{10})
+HandleNofMaxStepsCB(RL,[],varargin{10})
 if nargin>=11
-HandleModelGraphicsCB(RL,[],varargin{11})
+HandleReplacingTracesCB(RL,[],varargin{11})
 if nargin>=12
-Set(RL,'plot_learning_handle',varargin{12})
+HandleEnableRandomIcCB(RL,[],varargin{12})
 if nargin>=13
-Set(RL,'plot_Q_handle',varargin{13})
+HandleModelGraphicsCB(RL,[],varargin{13})
 if nargin>=14
-Set(RL,'plot_model_handle',varargin{14})
+Set(RL,'plot_learning_handle',varargin{14})
+if nargin>=15
+Set(RL,'plot_Q_handle',varargin{15})
+if nargin>=16
+Set(RL,'plot_model_handle',varargin{16})
+end
+end
 end
 end
 end
@@ -94,6 +100,18 @@ function [] = HandleGammaCB(RL,varargin)
     val =  varargin{2};
     if ischar(val) ; val = str2double(val) ; end
     Set(RL,'gamma',val);
+    
+function [] = HandleLambdaCB(RL,varargin)
+
+    val =  varargin{2};
+    if ischar(val) ; val = str2double(val) ; end
+    Set(RL,'lambda',val);
+    
+function [] = HandleReplacingTracesCB(RL,varargin)
+
+    val =  varargin{2};
+    if ischar(val) ; val = str2double(val) ; end
+    Set(RL,'replacing_traces',val);    
 
 function [] = HandleNofMaxStepsCB(RL,varargin)
     val =  varargin{2};
@@ -127,6 +145,9 @@ if selected_model>0
     Env = eval( RL.ModelList{selected_model} );
     Set(RL,'Env',Env)
 
+    RL.InitDone = 0;
+    RL.ClearLearningCurve();
+    
     constIC = num2str(RL.Env.const_IC);
     randIC  = RL.Env.random_IC;
 

@@ -9,7 +9,7 @@ classdef  CartPole < Environment
         Sdim;
         
         const_IC = [0 0 0.1 0] ;
-        random_IC = '[rand() rand() rand() rand() ]';
+        random_IC = '0.1*[rand()-0.5 rand()-0.5 rand()-0.5 rand()-0.5 ]';
         
         % discritization params:
         x1_min = -1;

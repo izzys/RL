@@ -41,7 +41,7 @@ classdef  GridWorld < Environment
         
         function [] = Init(Env)
                        
-            Env.S = 1:Env.Sdim;           
+            Env.S = (1:Env.Sdim)';           
             Env.Grid = reshape(Env.S,sqrt(Env.Sdim),sqrt(Env.Sdim))';
             Env.Adim = length(Env.A);
             

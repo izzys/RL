@@ -32,6 +32,8 @@ else
                 RL.max_steps = value; 
             case 'lambda'
                 RL.lambda = value; 
+            case 'replacing_traces'
+                RL.replacing_traces = value;
             case 'MethodFcn'
                 RL.MethodFcn = value;
             case 'Env'

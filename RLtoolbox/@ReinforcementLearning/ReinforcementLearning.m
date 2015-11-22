@@ -12,7 +12,7 @@ classdef ReinforcementLearning < handle
         MethodList = {'DP',...
                       'SARSA',...
                       'Qlearning',...
-                      'TDlambda',...
+                      'SARSA_lambda',...
                       []};
             
         % list of avaiable methods. make sure to match list on RLgui:
@@ -30,7 +30,6 @@ classdef ReinforcementLearning < handle
         eps;
         eps_decrease;
         eps_decrease_val;
-        lambda;
         max_steps ;
         
         
@@ -45,6 +44,11 @@ classdef ReinforcementLearning < handle
         V;
         Q;
         
+        % Eligibility traces params:
+        lambda
+        E;
+        replacing_traces;
+
         % model dimensions:
         Adim;
         Sdim;
@@ -91,9 +95,10 @@ classdef ReinforcementLearning < handle
                         
             RL.Sdim = RL.Env.Sdim;
             RL.Adim = RL.Env.Adim;
-            
-            RL.V = ones(1,RL.Sdim)*(-9999);
-            RL.Q = ones(RL.Adim,RL.Sdim)*(-9999);
+
+            RL.V = zeros(1,RL.Sdim);
+            RL.Q = zeros(RL.Adim,RL.Sdim);
+            RL.E = zeros(RL.Adim,RL.Sdim);
             
             RL.StopLearn = 0;
             

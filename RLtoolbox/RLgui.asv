@@ -22,7 +22,7 @@ function varargout = RLgui(varargin)
 
 % Edit the above text to modify the response to help RLgui
 
-% Last Modified by GUIDE v2.5 22-Nov-2015 21:02:12
+% Last Modified by GUIDE v2.5 22-Nov-2015 20:03:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -100,7 +100,7 @@ plot_Q_handle = handles.axes3;
 plot_model_handle = handles.axes1;
 enable_rand_IC_handle = handles.checkbox3;
 model_graphics_handle = handles.radiobutton1;
-rep_trc_handle = handles.checkbox6;
+rep_trc_handle = handles.checkbox4
 
 gamma = get(gamma_handle,'String');                          % Param #2
 lambda = get(lambda_handle,'String');                        % Param #3 
@@ -111,7 +111,7 @@ eps = get(eps_handle,'String');                              % Param #7
 eps_decreass = get(eps_decrease_handle,'Value');             % Param #8
 eps_decrease_val = get(eps_decrease_val_handle,'String');    % Param #9
 max_steps = get(max_steps_handle,'String');                  % Param #10
-replacing_traces = get(rep_trc_handle,'Value');             % Param #11
+replacing_traces = get(rep_trc_handle,'String');             % Param #11
 enable_rand_IC = get(enable_rand_IC_handle,'Value');         % Param #12
 enable_model_graphics = get(model_graphics_handle,'Value');  % Param #13
 
@@ -919,14 +919,3 @@ function edit12_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in checkbox6.
-function checkbox6_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox6 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox6
-val = get(hObject,'Value');
-Facade(handles.RL,'HandleReplacingTracesCB',val)
