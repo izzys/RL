@@ -22,7 +22,7 @@ function varargout = RLgui(varargin)
 
 % Edit the above text to modify the response to help RLgui
 
-% Last Modified by GUIDE v2.5 22-Nov-2015 21:02:12
+% Last Modified by GUIDE v2.5 01-Dec-2015 12:31:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,8 +64,6 @@ handles.output = hObject;
  set(model_handle, 'String',{ 'Select model...',...
                               'Grid world',...          % Model #1
                               'Cart pole',...           % Model #2
-                              'Acrobot',...             % Model #3
-                              'Tami',...                % Model #4
                               [] } );
 
 
@@ -582,7 +580,8 @@ if ~stop_episode
    % run episode:
    Facade(handles.RL,'HandleRunEpisodeCB')
    
-   set(start_learning_handle,'Enable','on')
+%    set(start_learning_handle,'Enable','on')
+   popupmenu_method_Callback(method_handle, [], handles)
    set( hObject , 'String' , 'Run one episode')
    
    % change flag so pressing the button again starts the episode:

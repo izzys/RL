@@ -1,4 +1,4 @@
-classdef  GridWorld < Environment
+classdef  GridWorld < handle
 
     properties 
 

@@ -125,7 +125,8 @@ classdef ReinforcementLearning < handle
             
             xlabel(RL.plot_Q_handle,'state','FontSize',11)
             ylabel(RL.plot_Q_handle,'action','FontSize',11) 
-            hold(RL.plot_Q_handle,'on')
+            hold on
+            
         end
           
         % Start and run the learning process:

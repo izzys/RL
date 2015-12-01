@@ -1,9 +1,11 @@
-disp('Installing RL toolbox ...')
+disp('Installing RL toolbox ... ')
 
-addpath @ReinforcementLearning
-addpath Abstract
-addpath Methods
-addpath Models
+currentFolder = pwd;
+
+addpath(currentFolder)
+addpath([currentFolder, '\Methods']);
+addpath([currentFolder, '\Models']);
+
 savepath 
 
 disp('Done! type RLgui in comand window to start toolbox.');

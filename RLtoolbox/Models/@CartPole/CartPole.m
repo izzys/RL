@@ -1,4 +1,4 @@
-classdef  CartPole < Environment
+classdef  CartPole < handle
 
     properties 
 
