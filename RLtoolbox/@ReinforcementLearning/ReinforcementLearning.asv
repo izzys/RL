@@ -2,20 +2,32 @@ classdef ReinforcementLearning < handle
  
     properties 
         
-        % handle to method function:
+        % Contains a handle to the selected learning method. The handle has 
+        % the form @Selected_Method. Make sure that Selected_Method is in the
+        % Matlab path and that it follows the method_template  that is given 
+        % in the Methods folder.
         MethodFcn;
         
-        % contains model object:
+        % Contains a handle to the environment object. The handle is passed 
+        % by constructing the selected model Env = SelectedModel(). Make sure 
+        % that SelectedModel is in the Matlab path and that is follows the 
+        % Environment empty template given in the Models folder.
         Env;
         
-        % list of avaiable models. make sure to match list on RLgui:
+        % Contains a cell with a list of available methods. Each method
+        % name must match the name of its corresponding scriptin the Methods 
+        % folder. Make sure that the list order matches the order of the
+        % method list in RLgui:
         MethodList = {'DP',...
                       'SARSA',...
                       'Qlearning',...
                       'SARSA_lambda',...
                       []};
             
-        % list of avaiable methods. make sure to match list on RLgui:
+        % Contains a cell with a list of available models. Each model name 
+        % must match the name of its corresponding class in the Models folder,
+        % with a parenthesis added.  Make sure that the list order matches the 
+        % order of the model list in RLgui.:
         ModelList = {'GridWorld()',...
                      'CartPole()',... 
                      'AcroBot()',...
@@ -87,7 +99,7 @@ classdef ReinforcementLearning < handle
              end
         end
         
-        % Initialize agent befor new learning session:
+        % Initialize agent before new learning session:
         function [] = Init(RL,varargin)
             
             RL.Env.Init();
@@ -119,13 +131,9 @@ classdef ReinforcementLearning < handle
             RL.PlotObj.curve = plot(RL.plot_learning_handle,0,0,'Color',RL.LearnPlotColor)  ; 
             
             RL.PlotObj.title = title(RL.plot_learning_handle,'Episode:       epsilon:        alpha:')  ;
-            
+%             
             xlabel(RL.plot_learning_handle,'Episodes')
             ylabel(RL.plot_learning_handle,'Reward') 
-            
-            xlabel(RL.plot_Q_handle,'state','FontSize',11)
-            ylabel(RL.plot_Q_handle,'action','FontSize',11) 
-            hold on
             
         end
           
@@ -134,9 +142,15 @@ classdef ReinforcementLearning < handle
            
            
             if (nargin== 1) %RL is used without GUI
+                  if isempty(RL.plot_learning_handle)
                   RL.plot_learning_handle = figure; 
+                  end
+                  if isempty(RL.plot_Q_handle)
                   RL.plot_Q_handle = figure;
+                  end
+                  if isempty(RL.plot_model_handle)
                   RL.plot_model_handle = figure;
+                  end
             end
 
             if isvalid(RL.Env)  % Run RL only if a environment is loaded
@@ -195,17 +209,7 @@ classdef ReinforcementLearning < handle
             
             
         end
-        
-        function [] = UpdatePolicy(RL,s,a,r,sp,ap)
-           
-           if isempty(RL.MethodFcn)         
-                %do nothing
-           else  
-                feval(RL.MethodFcn,RL,'UpdatePolicy',s,a,r,sp,ap) ;  
-           end
-            
-        end
-        
+               
         % An episode runs for #steps or until the goal is reached:
         function [total_reward,steps] = LearningEpisode(RL)
   
@@ -265,7 +269,6 @@ classdef ReinforcementLearning < handle
                    RL.Env.Render(x,a,steps,RL.plot_model_handle);    
                 end
 
-
                 %update the current variables
                 a = ap;
                 x = xp;
@@ -289,7 +292,7 @@ classdef ReinforcementLearning < handle
             
         end
         
-        % Plot a heat map of Q:
+        % Plot a learning curve and a heat map of Q:
         function [] = PlotLearningCurve(RL,episode,total_reward,steps)
             
           RL.Xpoints(episode)=episode;

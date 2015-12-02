@@ -1,7 +1,7 @@
-classdef (Abstract) Environment < handle
+classdef  Environment < handle
 
 
-    properties (Abstract)
+    properties 
                 
         S; % States 
         A; % Available actions
@@ -10,17 +10,25 @@ classdef (Abstract) Environment < handle
         Adim;
     end
     
-    methods (Abstract)
+    methods
         
-        [] = Init(Env)
+        function Env = Environment()
+        end
+        
+        function [] = Init(Env)
+        end
 
-        [ r ] = GetReward(Env,s,a)
+        function [ r ] = GetReward(Env,s,a)
+        end
 
-        [ s ] = GetNextState(Env,s,a)
+        function [ s ] = GetNextState(Env,s,a)
+        end
         
-        [ s ] = DiscretizeState( Env , x  )
+        function [ s ] = DiscretizeState( Env , x  )
+        end
         
-        [e] = Events(Env,s,a)
+        function [e] = Events(Env,s,a)
+        end
         
     end
     
