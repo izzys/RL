@@ -38,7 +38,7 @@ function [total_reward,steps] = RunEpisode(RL,varargin)
 
             % observe the reward at state xp
             [r]   = RL.Env.GetReward(x,a);
-            stop_episode = RL.Env.Events(x,a);
+            stop_episode = RL.Env.IsTerminal(x,a);
             total_reward = total_reward + (RL.gamma)^steps*r;
 
             % convert the continous state variables in [xp] to an index of the statelist    

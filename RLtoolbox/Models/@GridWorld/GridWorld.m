@@ -163,7 +163,7 @@ classdef  GridWorld < handle
 
         end
         
-        function [e] = Events(Env,s,a)            
+        function [e] = IsTerminal(Env,s,a)            
             e = 0;
         end
                 

@@ -14,7 +14,7 @@ classdef  CartPole < handle
         % discritization params:
         x1_min = -1;
         x1_max =  1;
-        x1_dim = 2;
+        x1_dim = 3;
         
         x2_min = -1;
         x2_max = 1;
@@ -22,11 +22,11 @@ classdef  CartPole < handle
         
         x3_min = deg2rad(-12);
         x3_max = deg2rad(12);
-        x3_dim = 9;
+        x3_dim = 13;
         
         x4_min = -1;
         x4_max = 1;
-        x4_dim = 2;
+        x4_dim = 3;
         
         % render
         RenderObj;
@@ -124,7 +124,7 @@ classdef  CartPole < handle
             
         end
         
-        function e = Events(Env,s,a)
+        function e = IsTerminal(Env,s,a)
             
             s_next = Env.GetNextState(s,a);
             
@@ -200,12 +200,7 @@ classdef  CartPole < handle
             end
             
         end
-        
-%         function [ d ] = edist( Env , x , y ) 
-%             %edist euclidean distance between two vectors
-%             d = sqrt( sum( (x-y).^2,2 ) );
-%         end
-        
+              
 
 
     end

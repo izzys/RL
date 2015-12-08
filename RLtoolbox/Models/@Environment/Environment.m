@@ -8,6 +8,9 @@ classdef  Environment < handle
         
         Sdim;
         Adim;
+        
+        const_IC;
+        random_IC;
     end
     
     methods
@@ -27,7 +30,7 @@ classdef  Environment < handle
         function [ s ] = DiscretizeState( Env , x  )
         end
         
-        function [e] = Events(Env,s,a)
+        function [e] = IsTerminal(Env,s,a)
         end
         
     end
