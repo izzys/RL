@@ -166,7 +166,7 @@ classdef ReinforcementLearning < handle
  
                 [total_reward,steps] = RL.LearningEpisode(); 
 
-                disp(['Espisode: ',int2str(episode),'  Steps:',int2str(steps),'  Reward:',num2str(total_reward),' epsilon: ',num2str(RL.eps)])
+                disp(['Espisode: ',int2str(episode),'  Steps:',int2str(steps),'  Reward:',num2str(total_reward)])
 
                 if RL.eps_decrease
                     RL.eps = RL.eps_decrease_val*RL.eps;
@@ -297,7 +297,7 @@ classdef ReinforcementLearning < handle
           RL.Ypoints(episode)=total_reward;    
 
           set(RL.PlotObj.curve,'Xdata',RL.Xpoints,'Ydata',RL.Ypoints)  
-          set(RL.PlotObj.title,'String',['Episode: ',int2str(episode),'  epsilon: ',num2str(RL.eps) , '  alpha: ' num2str(RL.alpha)]) 
+          set(RL.PlotObj.title,'String',['Episode: ',int2str(episode), '  steps: ',num2str(steps) , '  epsilon: ',num2str(RL.eps) , '  alpha: ' num2str(RL.alpha)]) 
           drawnow
           
           
