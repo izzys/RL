@@ -74,6 +74,7 @@ set(method_handle, 'String',{ 'Select method...',...
                               'SARSA',...               % Method #2
                               'Q learning',...          % Method #3
                               'SARSA lambda',...        % Method #4
+                              'Q lambda',...            % Method #5
                               [] } );
 
   
