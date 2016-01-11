@@ -97,8 +97,7 @@ ap = varargin{5};
 delta =  r + RL.gamma*Q_max - RL.Q(a,s) ;
 
 if RL.replacing_traces
-    
-    
+        
     RL.E(:,s) = 0;
     RL.E(a,s) = 1;
     RL.Q =  RL.Q + RL.alpha * delta * RL.E;
@@ -108,8 +107,7 @@ if RL.replacing_traces
     else
         RL.E = zeros(RL.Adim,RL.Sdim);    
     end
-    
-    
+      
 else
     
     RL.E(a,s) = RL.E(a,s)+1;
