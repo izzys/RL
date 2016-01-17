@@ -110,7 +110,7 @@ eps = get(eps_handle,'String');                              % Param #7
 eps_decreass = get(eps_decrease_handle,'Value');             % Param #8
 eps_decrease_val = get(eps_decrease_val_handle,'String');    % Param #9
 max_steps = get(max_steps_handle,'String');                  % Param #10
-replacing_traces = get(rep_trc_handle,'Value');             % Param #11
+replacing_traces = get(rep_trc_handle,'Value');              % Param #11
 enable_rand_IC = get(enable_rand_IC_handle,'Value');         % Param #12
 enable_model_graphics = get(model_graphics_handle,'Value');  % Param #13
 
